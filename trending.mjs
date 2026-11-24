@@ -6,6 +6,13 @@
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { execSync } from 'node:child_process';
+
+// 认证 token：gh 已登录则取，无则匿名（匿名 Search API 采样不稳 + 10 req/min）
+let TOKEN = '';
+try { TOKEN = execSync('gh auth token', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch {}
+const authHeaders = { 'User-Agent': 'trending-tracker', 'Accept': 'application/vnd.github+json',
+  ...(TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {}) };
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const args = Object.fromEntries(process.argv.slice(2).map(a => {
@@ -64,18 +71,18 @@ async function fetchTrending(since) {
 }
 
 // 季度/半年/一年：无 trending 页，用 Search API 取「窗口期内新建 + star 最多」
-// shortcut: 匿名 Search API 结果本身不稳定（索引分片近似），per_page=30 只是采样 top，个别热门项目可能缺席；升级：带 token 认证请求
+// shortcut: 匿名 Search API 结果不稳定（索引分片近似）；本机 gh 已登录则走认证请求（30 req/min，结果稳定），否则匿名
 async function fetchCreatedSince(days) {
   const since = new Date(Date.now() - days * 864e5).toISOString().slice(0, 10);
   const res = await fetch(
     `https://api.github.com/search/repositories?q=created:%3E${since}&sort=stars&order=desc&per_page=30`,
-    { headers: { 'User-Agent': 'trending-tracker', 'Accept': 'application/vnd.github+json' } },
+    { headers: authHeaders },
   );
   if (res.status === 403) { // rate limit：等一分钟后重试一次
     await new Promise(s => setTimeout(s, 65000));
     const retry = await fetch(
       `https://api.github.com/search/repositories?q=created:%3E${since}&sort=stars&order=desc&per_page=30`,
-      { headers: { 'User-Agent': 'trending-tracker', 'Accept': 'application/vnd.github+json' } },
+      { headers: authHeaders },
     );
     if (!retry.ok) throw new Error(`search(${since}) retry returned ${retry.status}`);
     return mapItems(await retry.json());

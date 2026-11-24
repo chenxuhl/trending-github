@@ -74,18 +74,22 @@
 | [colibri](https://github.com/JustVugg/colibri) | 53k | 07-01 | MoE 分层推理：热专家 GPU、冷专家 NVMe |
 | [Unlimited-OCR](https://github.com/baidu/Unlimited-OCR) | 32k | 06-18 | 百度一次性长程文档解析 |
 
-## 一年新建（近 365 天，top 10）
+## 一年新建（近 365 天，top 30）
 
 **值得看：**
 
 | 项目 | 星数 | 建于 | 标签 | 一句话 |
 |---|---|---|---|---|
+| [orca](https://github.com/stablyai/orca) | 134k | 03-17 | 💰 | 用自己的订阅跑一队 bot（Claude Code 等）。你正在用的就是它——年榜第 5，此前被脚本采样 bug 漏掉，已修 |
 | [career-ops](https://github.com/career-ops-hq/career-ops) | 84k | 04-04 | 💼 | AI 找工作 agent：打分、简历、追踪，本地跑 |
+| [karpathy/autoresearch](https://github.com/karpathy/autoresearch) | 100k | 03-06 | ⚡ | Karpathy 的自动调研工具 |
+| [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | 235k | 01-27 | ⚡ | 把 Karpathy 的工程原则做成 agent 技能 |
+| [graphify](https://github.com/Graphify-Labs/graphify) | 152k | 04-03 | ⚡ | 代码知识图谱 |
 | [reverse-skill](https://github.com/zhaoxuya520/reverse-skill) | 45k | 05-13 | ⚡ | 逆向/渗透技能路由包，中文 |
 | [obscura](https://github.com/h4ckf0r0day/obscura) | 37k | 04-13 | ⚡ | 给 agent 的无头浏览器 |
 | [OpenCLI](https://github.com/jackwener/OpenCLI) | 31k | 03-14 | ⚡ | 任意网站变 CLI，用你已登录的浏览器 |
 
-**一句话带过：** oh-my-openagent（71k）、CLI-Anything（64k）、awesome-openclaw-skills（54k）、Recordly（37k 录演示视频）、CloakBrowser（33k 反检测浏览器）、floci（32k AWS 本地模拟）。
+**一句话带过：** deepseek-harness（286k，半年窗口第一名）、humanizer（72k）、rtk（87k）、t3code（75k）、get-shit-done（64k）、oh-my-openagent（71k）、CLI-Anything（64k）、worldmonitor（91k）、VoiceStudio（117k）、agent-skills（120k）、awesome-openclaw-skills（54k）、Recordly（37k）、CloakBrowser（33k）、floci（32k）。
 
 ---
 

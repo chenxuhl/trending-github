@@ -64,14 +64,26 @@ async function fetchTrending(since) {
 }
 
 // 季度/半年/一年：无 trending 页，用 Search API 取「窗口期内新建 + star 最多」
+// shortcut: 匿名 Search API 结果本身不稳定（索引分片近似），per_page=30 只是采样 top，个别热门项目可能缺席；升级：带 token 认证请求
 async function fetchCreatedSince(days) {
   const since = new Date(Date.now() - days * 864e5).toISOString().slice(0, 10);
   const res = await fetch(
-    `https://api.github.com/search/repositories?q=created:%3E${since}&sort=stars&order=desc&per_page=15`,
+    `https://api.github.com/search/repositories?q=created:%3E${since}&sort=stars&order=desc&per_page=30`,
     { headers: { 'User-Agent': 'trending-tracker', 'Accept': 'application/vnd.github+json' } },
   );
+  if (res.status === 403) { // rate limit：等一分钟后重试一次
+    await new Promise(s => setTimeout(s, 65000));
+    const retry = await fetch(
+      `https://api.github.com/search/repositories?q=created:%3E${since}&sort=stars&order=desc&per_page=30`,
+      { headers: { 'User-Agent': 'trending-tracker', 'Accept': 'application/vnd.github+json' } },
+    );
+    if (!retry.ok) throw new Error(`search(${since}) retry returned ${retry.status}`);
+    return mapItems(await retry.json());
+  }
   if (!res.ok) throw new Error(`search(${since}) returned ${res.status}`);
-  const data = await res.json();
+  return mapItems(await res.json());
+}
+function mapItems(data) {
   return (data.items || []).map(i => ({
     repo: i.full_name, desc: (i.description || '').trim(), stars: i.stargazers_count,
     lang: i.language || '', delta: i.stargazers_count, created: i.created_at.slice(0, 10),
@@ -104,10 +116,9 @@ async function mainAsync() {
     const extra = r.created ? ` _${r.created} 新建_` : '';
     return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra} — ${r.desc || '(no description)'}`;
   };
-  const seen = new Set(weekly.map(r => r.repo));
-  const dedupe = rs => rs.filter(r => !seen.has(r.repo) && (seen.add(r.repo), true));
-  const sec = rs => { const d = dedupe(rs); return { n: d.length, items: d }; };
-  const mSec = sec(monthly), qSec = sec(quarter), hSec = sec(half), ySec = sec(year);
+  // 各窗口独立去重（只去掉与「本周」重复的），跨月/季/半年/年窗口允许重复出现——长窗口本就该再次看到持续热门项目
+  const weekSet = new Set(weekly.map(r => r.repo));
+  const minusWeek = rs => rs.filter(r => !weekSet.has(r.repo));
 
   const longBurn = weekly.filter(r => history[r.repo].weeks >= 4)
     .sort((a, b) => history[b.repo].weeks - history[a.repo].weeks);
@@ -120,17 +131,17 @@ async function mainAsync() {
     `## 🔥 持续在榜 ≥4 期（${longBurn.length}）`,
     ...longBurn.map(r => `${fmt(r)} _在榜 ${history[r.repo].weeks} 期_`),
     ``,
-    `## 本月（trending monthly，去重后 ${mSec.n}）`,
-    ...mSec.items.sort((a, b) => b.delta - a.delta).map(fmt),
+    `## 本月（trending monthly，去重本周后 ${minusWeek(monthly).length}）`,
+    ...minusWeek(monthly).sort((a, b) => b.delta - a.delta).map(fmt),
     ``,
-    `## 本季度（近 90 天新建 + star 排序，top ${qSec.n}）`,
-    ...qSec.items.map(fmt),
+    `## 本季度（近 90 天新建 + star 排序，top ${minusWeek(quarter).length}）`,
+    ...minusWeek(quarter).map(fmt),
     ``,
-    `## 半年（近 182 天新建 + star 排序，top ${hSec.n}）`,
-    ...hSec.items.map(fmt),
+    `## 半年（近 182 天新建 + star 排序，top ${minusWeek(half).length}）`,
+    ...minusWeek(half).map(fmt),
     ``,
-    `## 一年（近 365 天新建 + star 排序，top ${ySec.n}）`,
-    ...ySec.items.map(fmt),
+    `## 一年（近 365 天新建 + star 排序，top ${minusWeek(year).length}）`,
+    ...minusWeek(year).map(fmt),
     ``,
   ].join('\n');
   writeFileSync(OUT, report);

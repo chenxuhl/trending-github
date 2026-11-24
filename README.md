@@ -17,12 +17,25 @@ Each run produces `report.md`:
 
 | Section | Source |
 |---|---|
+| 💎 Top picks | scored and ranked by `score()` — see below |
 | 🆕 New this run | auto-diff vs `seen.json` (last run's repo set) |
 | Seed signals | `seeds.json`: new repos from followed authors (pushed <30d) + topic projects (<90d, interest-tagged) |
 | Daily / Weekly / Monthly | GitHub Trending pages |
 | Quarterly / Yearly | Search API: created-in-window + top by stars (authenticated via `gh auth token`, 30 req/min) |
 
-Every repo is tagged against four interests — ⚡ productivity / 💰 side-hustle / 💼 job-search / 📈 investing — by regex first, human judgment second.
+## Scoring
+
+Stars rank popularity, not usefulness. `score()` ranks by relevance to four interests — ⚡ productivity / 💰 side-hustle / 💼 job-search / 📈 investing:
+
+- **Strong keywords only**: in 2026 nearly every trending repo says "agent" or "skill", so those are demoted to weak signals worth a flat +3. A tag requires a concrete scenario word (`stripe`, `backtest`, `resume`, `code review`, …).
+- **Money first**: 💰/💼/📈 hits get +15 over productivity-only.
+- **Keyword density** (+2 each, capped +16): a repo that is really about trading beats one that merely mentions a market.
+- **Early window** (+20): created <90d with 50–5000 stars — found before everyone else.
+- **Momentum** (+1 per 500 weekly stars, capped +10).
+- **Penalties**: >50k stars −8 (you'd hear about it anyway), on the weekly board ≥4 runs −1/run (you've had your chance), <50 stars −12 (unvalidated), missing description −10.
+- **Hard excluded**: mirrors, nightly/hourly build repos, read-only catalogs.
+
+Edit `STRONG` / `score()` in `trending.mjs` to retune; `--selftest` asserts the ranking invariants.
 
 ## Files
 

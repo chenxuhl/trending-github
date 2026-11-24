@@ -49,16 +49,49 @@ function parseTrending(html) {
   return repos;
 }
 
-// 关注方向：提效 + 赚钱（副业/求职/投资多维）。关键词可自行增删，命中即归类。
-const INTERESTS = {
-  '⚡ 提效': /agent|skill|mcp|automat|workflow|pipeline|editor|cli|devtools|productiv|code.?review|boilerplate|scaffold|rpa|no.?code/i,
-  '💰 副业': /saas|side.?project|indie|startup|landing|template|boilerplate|scaffold|starter|monet|subscription|stripe|payment|billing|commerce|shop|ecommerce|marketplace|portfolio/i,
-  '💼 求职': /interview|resume|cv|job|career|hiring|leetcode|algorithm|面试|简历/i,
-  '📈 投资': /trading|finance|crypto|stock|market|fintech|quant|backtest|portfolio|forex|bitcoin|defi/i,
+// 关注方向打分。2026 年「agent/skill」几乎人人都有，不再是信号，只作弱加分。
+// 强词 = 直接对应用户的具体场景（能赚钱/能省时间的具体动作），弱词 = 领域背景噪音。
+const STRONG = {
+  '💰 副业': /saas|side.?hustle|side.?project|indie.?(hacker|maker)|monetiz|revenue|stripe|payment|billing|subscription|ecommerce|shopify|dropship|affiliate|seo|backlink|product.?hunt|launch|directory|app.?idea|startup.?idea|freelance|接单|变现|副业/i,
+  '💼 求职': /resume|cv.?builder|cover.?letter|job.?(search|board|appl|hunt)|interview.?(prep|question)|ats|career|leetcode|hiring|layoff|unemploy|面试|简历|求职|裁员|失业/i,
+  '📈 投资': /trading|trade.?(bot|agent|engine)|backtest|quant|portfolio.?(track|manag)|stock|equit|option|futures|forex|crypto|defi|net.?worth|personal.?finance|budget|broker|market.?(data|maker)|交易|投资|理财|量化/i,
+  '⚡ 提效': /code.?review|refactor|debug|test.?(gen|coverage)|ci\/cd|devops|lint|token.?(cost|saving|reduc)|context.?(manag|window)|memory|prompt.?(optimi|engineer)|benchmark|observab|monitor|profil|migrat|document(ation)?.?gen|boilerplate|scaffold|template.?repo|自动化|提效/i,
 };
+// 弱词：命中只在已有强标签时加一分权重，自己不单独产生标签
+const WEAK = /agent|skill|mcp|cli|automat|workflow|llm|ai/i;
+
 function classify(r) {
   const text = `${r.repo} ${r.desc}`;
-  return Object.keys(INTERESTS).filter(k => INTERESTS[k].test(text));
+  return Object.keys(STRONG).filter(k => STRONG[k].test(text));
+}
+
+// 价值分：用于精华排序与「备查」降级。不是星数排序——星多未必对你有用。
+function score(r, history) {
+  const tags = classify(r);
+  if (!tags.length) return 0;                       // 无强标签 = 不进精华
+  const text = `${r.repo} ${r.desc}`;
+  // 排除类：镜像/构建产物/目录索引本身无使用价值
+  if (/\b(mirror|read-only|nightly|hourly build|daily build|adhoc build|not a source repo)\b/i.test(text)) return 0;
+  let s = 10 * tags.length;
+  if (tags.some(t => /💰|💼|📈/.test(t))) s += 15;    // 赚钱类优先于提效类
+  // 强词密度：命中越多说明越是这个领域的正主，不是蹭词
+  const density = Object.values(STRONG).reduce((n, re) => n + (text.match(new RegExp(re.source, 'gi')) || []).length, 0);
+  s += Math.min(density * 2, 16);
+  if (WEAK.test(text)) s += 3;                       // AI 生态内，工具链契合
+  // 早期窗口：新建且星少 = 机会；但 0 星无人验证反而风险
+  const ageDays = r.created ? (Date.now() - new Date(r.created)) / 864e5 : 999;
+  if (ageDays < 90 && r.stars >= 50 && r.stars < 5000) s += 20;
+  if (r.stars < 50) s -= 12;                         // 几乎没人用过，无法判断质量
+  if (r.stars > 50000) s -= 8;                       // 大热项目信息价值低
+  // 增速信号：trending 榜上的周/月增量说明正在起势
+  if (r.delta && r.delta !== r.stars) s += Math.min(Math.round(r.delta / 500), 10);
+  // 衰减：长期在榜说明你早有机会看到
+  const weeks = history?.[r.repo]?.weeks || 0;
+  if (weeks >= 4) s -= Math.min(weeks, 20);
+  // 描述质量：没描述无法判断价值
+  if (!r.desc || r.desc.length < 20) s -= 10;
+  if (r.desc && r.desc.length > 80) s += 4;          // 说得清自己做什么
+  return s;
 }
 
 async function fetchTrending(since) {
@@ -165,6 +198,7 @@ async function mainAsync() {
     const isNew = seenBefore && !seenBefore.has(r.repo) ? ' **🆕本期新增**' : '';
     return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra}${isNew} — ${r.desc || '(no description)'}`;
   };
+  const fmtScored = r => `${fmt(r)} _[${score(r, history)}分]_`;
   // 各榜独立去重：只去掉与更短窗口重复的（日→周→月→季→年），长窗口重复保留
   const weekSet = new Set(weekly.map(r => r.repo));
   const minusWeek = rs => rs.filter(r => !weekSet.has(r.repo));
@@ -175,10 +209,18 @@ async function mainAsync() {
   const freshList = seenBefore ? allNow.filter(r => !seenBefore.has(r.repo)) : [];
   writeFileSync(SEEN, JSON.stringify({ date: today, repos: [...new Set(allNow.map(r => r.repo))] }, null, 2));
 
+  // 精华候选：按价值分排序（非星数），只取有强方向标签的。分数逻辑见 score()
+  const essence = dedupeBy(allNow).map(r => ({ r, s: score(r, history) }))
+    .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 15);
+
   const longBurn = weekly.filter(r => history[r.repo].weeks >= 4)
     .sort((a, b) => history[b.repo].weeks - history[a.repo].weeks);
   const report = [
     `# GitHub Trending 全窗口（${today}）`,
+    ``,
+    `## 💎 精华候选（按价值分排序，top ${essence.length}）`,
+    `_分数 = 强方向标签 + 赚钱类优先 + 早期窗口(新建且<5k星) - 大热降权 - 长期在榜衰减 - 无描述扣分_`,
+    ...essence.map(x => fmtScored(x.r)),
     ``,
     seenBefore
       ? `## 🆕 本期新增（相对上期 ${seenDate}，${dedupeBy(freshList).length} 个）\n${dedupeBy(freshList).length ? dedupeBy(freshList).sort((a, b) => b.stars - a.stars).map(fmt).join('\n') : '_无新增_'}`
@@ -230,6 +272,22 @@ if (args.selftest) {
   console.assert(r[0].lang === 'Rust', 'lang');
   console.assert(r[0].delta === 2300, 'delta');
   console.assert(classify(r[0]).includes('📈 投资'), 'classify trading');
+  // 弱词不再单独产标签：纯 agent/skill 项目不该有 ⚡
+  console.assert(classify({ repo: 'x/y', desc: 'An agent skill framework with MCP' }).length === 0, 'weak words make no tag');
+  console.assert(classify({ repo: 'x/y', desc: 'Automated code review and refactor tool' }).includes('⚡ 提效'), 'strong productivity word');
+  // 价值分：新+小+赚钱类 > 老+大热
+  const small = { repo: 'a/a', desc: 'Side hustle SaaS revenue tracker with stripe billing and subscription management', stars: 300, created: new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10) };
+  const huge = { repo: 'b/b', desc: 'Automated code review for agents', stars: 90000, created: '2026-01-01' };
+  console.assert(score(small, {}) > score(huge, {}), `small-new should outrank huge-old: ${score(small, {})} vs ${score(huge, {})}`);
+  console.assert(score({ repo: 'c/c', desc: 'A generic agent harness', stars: 1000 }, {}) === 0, 'no strong tag = 0 score');
+  // 镜像/构建产物直接排除
+  console.assert(score({ repo: 'x/m', desc: 'Read-only mirror of plugin marketplace releases for stripe billing', stars: 0 }, {}) === 0, 'mirror excluded');
+  // 0 星项目扣分：同描述下星少的不该赢
+  const zero = { ...small, repo: 'z/z', stars: 2 };
+  console.assert(score(zero, {}) < score(small, {}), 'zero-star penalized');
+  // 长期在榜衰减
+  const base = { repo: 'd/d', desc: 'Stock trading backtest engine for quant portfolio management', stars: 400 };
+  console.assert(score(base, { 'd/d': { weeks: 20 } }) < score(base, {}), 'streak decay');
   // 新增 diff：上期有 a/a，本期 a/a + b/b → 只有 b/b 是新增
   const before = new Set(['a/a']);
   const fresh = [{ repo: 'a/a' }, { repo: 'b/b' }].filter(x => !before.has(x.repo));

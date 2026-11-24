@@ -1,0 +1,29 @@
+{
+  "repos": [
+    "stablyai/orca",
+    "anthropics/claude-code",
+    "DietrichGebert/ponytail",
+    "deepseek-ai/deepseek-harness",
+    "mvanhorn/last30days-skill",
+    "tradermonty/claude-trading-skills"
+  ],
+  "topics": [
+    "claude-code",
+    "agent-skills",
+    "mcp",
+    "coding-agent",
+    "trading",
+    "quantitative-finance",
+    "personal-finance",
+    "job-search",
+    "indie-hackers",
+    "saas"
+  ],
+  "authors": [
+    "anthropics",
+    "deepseek-ai",
+    "karpathy",
+    "mattpocock",
+    "stablyai"
+  ]
+}

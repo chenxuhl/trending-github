@@ -98,11 +98,47 @@ function mapItems(data) {
 }
 
 function main() { return mainAsync(); }
+
+// ===== 种子信号：seeds.json 里的作者新 repo、topic 新项目 =====
+async function searchRepo(q, per = 5) {
+  const res = await fetch(
+    `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${per}`,
+    { headers: authHeaders },
+  );
+  if (!res.ok) return [];
+  return mapItems(await res.json());
+}
+async function listAuthorRepos(author) {
+  const res = await fetch(`https://api.github.com/users/${author}/repos?sort=pushed&per_page=10`, { headers: authHeaders });
+  if (!res.ok) return [];
+  return (await res.json()).map(i => ({
+    repo: i.full_name, desc: (i.description || '').trim(), stars: i.stargazers_count,
+    lang: i.language || '', delta: i.stargazers_count, created: i.created_at.slice(0, 10), pushed: i.pushed_at.slice(0, 10),
+  }));
+}
+
 async function mainAsync() {
   const today = new Date().toISOString().slice(0, 10);
   const history = existsSync(HISTORY) ? JSON.parse(readFileSync(HISTORY, 'utf8')) : {};
+  const seeds = JSON.parse(readFileSync(join(ROOT, 'seeds.json'), 'utf8'));
+  const seedRepos = new Set(seeds.repos || []);
+  const dedupeBy = rs => { const s = new Set(); return rs.filter(r => !s.has(r.repo) && (s.add(r.repo), true)); };
 
-  // 本周：trending weekly，唯一更新 history 的来源
+  // 1) 种子信号：作者近 30 天有 push 的 repo
+  const authorSignals = [];
+  for (const a of (seeds.authors || [])) {
+    const repos = await listAuthorRepos(a);
+    authorSignals.push(...repos.filter(r => !seedRepos.has(r.repo) && Date.now() - new Date(r.pushed) < 30 * 864e5));
+  }
+  // 2) 种子 topic 近 90 天新项目
+  const topicSince = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10);
+  const topicSignals = [];
+  for (const t of (seeds.topics || [])) {
+    const repos = await searchRepo(`topic:${t} created:>${topicSince}`);
+    topicSignals.push(...repos.filter(r => !seedRepos.has(r.repo)));
+  }
+
+  // 3) 常规五窗口
   const weekly = await fetchTrending('weekly');
   const newOnes = [];
   for (const r of weekly) {
@@ -111,8 +147,6 @@ async function mainAsync() {
     else { h.lastSeen = today; h.weeks += 1; h.maxDelta = Math.max(h.maxDelta, r.delta); }
   }
   writeFileSync(HISTORY, JSON.stringify(history, null, 2));
-
-  // 其余窗口
   const monthly = await fetchTrending('monthly');
   const quarter = await fetchCreatedSince(90);
   const half = await fetchCreatedSince(182);
@@ -131,6 +165,13 @@ async function mainAsync() {
     .sort((a, b) => history[b.repo].weeks - history[a.repo].weeks);
   const report = [
     `# GitHub Trending 全窗口（${today}）`,
+    ``,
+    `## 种子信号（你在用/关注的人和主题）`,
+    `### 种子作者近 30 天活跃（${dedupeBy(authorSignals).length}）`,
+    ...dedupeBy(authorSignals).sort((a, b) => b.stars - a.stars).map(fmt),
+    ``,
+    `### 种子 topic 近 90 天新项目（${dedupeBy(topicSignals).length}）`,
+    ...dedupeBy(topicSignals).sort((a, b) => b.stars - a.stars).map(fmt),
     ``,
     `## 本周（trending weekly，${weekly.length}）`,
     ...weekly.sort((a, b) => b.delta - a.delta).map(fmt),
@@ -152,6 +193,6 @@ async function mainAsync() {
     ``,
   ].join('\n');
   writeFileSync(OUT, report);
-  console.log(`weekly ${weekly.length} (${newOnes.length} new), monthly ${monthly.length}, quarterly/half/year via search -> ${OUT}`);
+  console.log(`seeds: authors ${dedupeBy(authorSignals).length}, topics ${dedupeBy(topicSignals).length}; weekly ${weekly.length} (${newOnes.length} new), monthly ${monthly.length} -> ${OUT}`);
 }
 main().catch(e => { console.error(String(e)); process.exit(1); });

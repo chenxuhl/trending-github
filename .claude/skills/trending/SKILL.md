@@ -1,9 +1,9 @@
 ---
 name: trending
-description: 抓取 GitHub Trending 并产出中文周报。触发词：跑 trending、抓 trending、trending 周报、本周有什么新项目、看看 trending。用户每周想了解 GitHub 新晋热门项目（方向：提效、赚钱），必须产出中文报告。
+description: 抓取 GitHub Trending 并产出中文报告。触发词：跑 trending、抓 trending、trending 报告、日榜、周榜、月榜、本周有什么新项目、看看 trending。用户定期想了解 GitHub 新晋热门项目（方向：提效、赚钱），必须产出中文报告。
 ---
 
-# trending 抓取与中文周报
+# trending 抓取与中文报告
 
 ## 步骤
 
@@ -11,20 +11,24 @@ description: 抓取 GitHub Trending 并产出中文周报。触发词：跑 tren
    ```bash
    node trending.mjs
    ```
-   输出 `report.md`（底稿：种子信号 + 五窗口）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
+   输出 `report.md`（底稿：种子信号 + 日/周/月/季/年五榜）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
 
-2. 读 `report.md`。结构（重要性从高到低）：
-   - **种子信号（第一节）**：`seeds.json` 里作者的新 repo、种子 topic 新项目——与用户直接相关，报告的主角
-   - 本周（trending weekly）
+2. 读 `report.md`。结构（照搬到底稿顺序）：
+   - 种子信号（`seeds.json` 作者新 repo + topic 新项目）
+   - 日榜 / 周榜（trending）
    - 🔥 持续在榜 ≥4 期
-   - 本月 / 本季度 / 半年 / 一年
+   - 月榜（trending）/ 季榜、年榜（Search API 新建 + star 排序）
 
-3. **中文报告只分两层（`report-zh.md`，覆盖式）**：
-   - **「与你相关」**：种子信号全部展开 + 五窗口里命中 ⚡💰💼📈 或与方向强相关的项目，逐条给「对你的用处」。目标 ≤15 条，这是报告主体。
-   - **「全站速览」**：其余项目一段带过，只留名字+星数，不展开。
-   - 报告开头「选择策略」小节保留：说清两层怎么分的、低星项目入选理由。
-   - 标签判断优先读描述人工归类（正则 `INTERESTS` 只是粗筛，中文项目正则漏标时人工补）。
-   - 种子清单维护：用户提到在用/关注新工具时，建议加进 `seeds.json`。
+3. 写 `report-zh.md`（覆盖式，每期一份）：
+   - 全文中文，repo 名/语言/链接保留原文
+   - **报告结构 = 底稿结构**：种子信号 + 日榜 + 周榜 + 持续在榜 + 月榜 + 季榜 + 年榜，每个小节一个表格（项目/星数/增量或建于/标签/一句话）
+   - 每小节内分「值得看」（命中 ⚡💰💼📈 或与方向强相关，给「对你的用处」）和「一句话带过」两档
+   - 开头「选择策略」小节 + 「只看这里就够的 3 个项目」表（用户反馈过：这个开头必须有）
+   - 开头点出与上期的变化：日榜/周榜新面孔、持续在榜期数变化
+   - 标签判断优先读描述人工归类（正则 `INTERESTS` 只是粗筛，中文项目正则漏标时人工补）
+   - 低星项目出现在「值得看」必须有明确理由（方向强对口、种子生态）
+   - 种子清单维护：用户提到在用/关注新工具时，建议加进 `seeds.json`
+   - **不要**把五榜折叠成「相关/无关」两层——用户试过并否决了那种格式
 
 4. 回复用户：3-5 行摘要，点名本期最值得看的 2-3 个项目及理由（按用户两个方向评估价值），并附 `report-zh.md` 路径。
 

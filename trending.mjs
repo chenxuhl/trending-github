@@ -138,7 +138,8 @@ async function mainAsync() {
     topicSignals.push(...repos.filter(r => !seedRepos.has(r.repo)));
   }
 
-  // 3) 常规五窗口
+  // 3) 常规五窗口：日/周/月(trending) + 季/年(Search API)
+  const daily = await fetchTrending('daily');
   const weekly = await fetchTrending('weekly');
   const newOnes = [];
   for (const r of weekly) {
@@ -149,7 +150,6 @@ async function mainAsync() {
   writeFileSync(HISTORY, JSON.stringify(history, null, 2));
   const monthly = await fetchTrending('monthly');
   const quarter = await fetchCreatedSince(90);
-  const half = await fetchCreatedSince(182);
   const year = await fetchCreatedSince(365);
 
   const fmt = r => {
@@ -157,7 +157,7 @@ async function mainAsync() {
     const extra = r.created ? ` _${r.created} 新建_` : '';
     return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra} — ${r.desc || '(no description)'}`;
   };
-  // 各窗口独立去重（只去掉与「本周」重复的），跨月/季/半年/年窗口允许重复出现——长窗口本就该再次看到持续热门项目
+  // 各榜独立去重：只去掉与更短窗口重复的（日→周→月→季→年），长窗口重复保留
   const weekSet = new Set(weekly.map(r => r.repo));
   const minusWeek = rs => rs.filter(r => !weekSet.has(r.repo));
 
@@ -173,26 +173,26 @@ async function mainAsync() {
     `### 种子 topic 近 90 天新项目（${dedupeBy(topicSignals).length}）`,
     ...dedupeBy(topicSignals).sort((a, b) => b.stars - a.stars).map(fmt),
     ``,
-    `## 本周（trending weekly，${weekly.length}）`,
+    `## 日榜（trending daily，${daily.length}）`,
+    ...daily.sort((a, b) => b.delta - a.delta).map(fmt),
+    ``,
+    `## 周榜（trending weekly，${weekly.length}）`,
     ...weekly.sort((a, b) => b.delta - a.delta).map(fmt),
     ``,
     `## 🔥 持续在榜 ≥4 期（${longBurn.length}）`,
     ...longBurn.map(r => `${fmt(r)} _在榜 ${history[r.repo].weeks} 期_`),
     ``,
-    `## 本月（trending monthly，去重本周后 ${minusWeek(monthly).length}）`,
+    `## 月榜（trending monthly，去重周榜后 ${minusWeek(monthly).length}）`,
     ...minusWeek(monthly).sort((a, b) => b.delta - a.delta).map(fmt),
     ``,
-    `## 本季度（近 90 天新建 + star 排序，top ${minusWeek(quarter).length}）`,
+    `## 季榜（近 90 天新建 + star 排序，top ${minusWeek(quarter).length}）`,
     ...minusWeek(quarter).map(fmt),
     ``,
-    `## 半年（近 182 天新建 + star 排序，top ${minusWeek(half).length}）`,
-    ...minusWeek(half).map(fmt),
-    ``,
-    `## 一年（近 365 天新建 + star 排序，top ${minusWeek(year).length}）`,
+    `## 年榜（近 365 天新建 + star 排序，top ${minusWeek(year).length}）`,
     ...minusWeek(year).map(fmt),
     ``,
   ].join('\n');
   writeFileSync(OUT, report);
-  console.log(`seeds: authors ${dedupeBy(authorSignals).length}, topics ${dedupeBy(topicSignals).length}; weekly ${weekly.length} (${newOnes.length} new), monthly ${monthly.length} -> ${OUT}`);
+  console.log(`seeds: authors ${dedupeBy(authorSignals).length}, topics ${dedupeBy(topicSignals).length}; daily ${daily.length}, weekly ${weekly.length} (${newOnes.length} new), monthly ${monthly.length} -> ${OUT}`);
 }
 main().catch(e => { console.error(String(e)); process.exit(1); });

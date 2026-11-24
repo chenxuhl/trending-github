@@ -13,7 +13,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(a => {
   return m ? [m[1], m[2]] : [a.replace(/^--/, ''), true];
 }));
 const SINCE = args.since || 'weekly';
-const OUT = join(ROOT, args.out || `report-${SINCE}.md`);
+const OUT = join(ROOT, args.out || 'report.md');
 const HISTORY = join(ROOT, 'history.json');
 
 function decodeEntities(s) {

@@ -11,9 +11,9 @@ description: 抓取 GitHub Trending 并产出中文周报。触发词：跑 tren
    ```bash
    node trending.mjs
    ```
-   输出 `report-weekly.md`（英文/中文混合底稿，含五窗口）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
+   输出 `report.md`（英文/中文混合底稿，含五窗口）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
 
-2. 读 `report-weekly.md`。五个窗口，重点：
+2. 读 `report.md`。五个窗口，重点：
    - 本周（trending weekly）：新晋热门
    - 🔥 持续在榜 ≥4 期：用户最在意（Orca 式教训：火了很久才知道）
    - 本月（trending monthly）

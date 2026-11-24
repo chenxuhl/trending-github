@@ -13,13 +13,13 @@ node trending.mjs                 # 五窗口报告：本周/本月(trending) + 
 node trending.mjs --selftest      # 解析器自检（HTML 改版后先跑这个）
 ```
 
-每次跑完，读 `report-weekly.md`，把内容整理翻成中文写入 `report-zh.md`（用户中文阅读优先，单一文档五个小节）。
+每次跑完，读 `report.md`，把内容整理翻成中文写入 `report-zh.md`（用户中文阅读优先，单一文档五个小节）。
 
 ## 文件
 
 - `trending.mjs` — 抓取 + 解析 + 分类（⚡ 提效 / 💰 赚钱 关键词匹配，关键词在 `INTERESTS`，可改）
 - `history.json` — 各 repo 首见/末见/在榜期数，删掉即重置
-- `report-weekly.md` — 脚本生成的英文报告
+- `report.md` — 脚本生成的英文报告
 - `report-zh.md` — 中文版报告（人工/会话产出）
 
 ## 排查

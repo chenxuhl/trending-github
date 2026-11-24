@@ -6,6 +6,26 @@
 
 **本期新增（相对上期 2026-11-24）：0 个**（同日第二次运行）。
 
+## 💎 本期精华（7 个，按行动价值排序）
+
+只列值得动手的。筛选：方向强命中 + 至少一项（早期机会 / 官方出品 / 直接可用 / 同类最佳）。
+
+| # | 项目 | 为什么是精华 | 你怎么用 |
+|---|---|---|---|
+| 1 | [orca-plugins](https://github.com/stablyai/orca-plugins)（41 星 💰） | 早期窗口：Orca 官方插件市场，知道的人极少 | 你是 Orca 重度用户——看市场缺什么插件，写一个上架，吃生态红利 |
+| 2 | [career-ops](https://github.com/career-ops-hq/career-ops)（84k 💼） | 同类最佳：AI 求职 agent 里最完整的（打分+ATS 简历+追踪） | 想换工作时直接跑；平时留着自己简历数据 |
+| 3 | [autoclip](https://github.com/zhouxiaoka/autoclip)（15k 💰 中文） | 直接可用：链接进、短视频+字幕+文案出，适配抖音/小红书 | 内容副业的流水线工具，零剪辑技能要求 |
+| 4 | [HowToLiveBetter](https://github.com/eternity4719/HowToLiveBetter)（77k 📈 中文） | 独一无二：每条结论带证据等级和出处的中文人生理财指南 | 理财/社保/法律决策前查一遍，避免踩坑 |
+| 5 | [claude-seo](https://github.com/AgriciDaniel/claude-seo)（32k 💰） | 官方生态缺位：SEO 这块最全的 Claude 技能（26 子技能） | 任何要做流量的副业项目装上即用 |
+| 6 | [risk-aware-trading-agents](https://github.com/jackson-cmd/risk-aware-trading-agents)（475 📈） | 方法论领先：回测防未来函数 + 公开排行榜，比同类玩具严谨 | 📈 交易 agent 选型的起点 |
+| 7 | [rtk](https://github.com/rtk-ai/rtk)（87k ⚡） | 刚需：CLI 层 token 省 60-90%，单 Rust 二进制 | 立即装，省的是真金白银 |
+
+**淘汰说明**（为什么榜上其他 140+ 个不是精华）：同类已有更好的（photocraft/pdfcraft/wordcraft/lightcraft 同一作者批量出，留一个即可）；只是热不解决你的问题（nginx、AFFiNE）；方向不符（PS5 移植、Switch 模拟）；星多但对你无增量（firecrawl 你已在用生态内工具）。
+
+---
+
+以下为全量条目（备查，不必逐条读）。
+
 ## 种子信号：作者近 30 天活跃（18）
 
 | 项目 | 星数 | 建于 | 标签 | 一句话 |

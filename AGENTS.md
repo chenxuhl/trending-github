@@ -13,14 +13,15 @@ node trending.mjs                 # 报告：种子信号 + 本周/本月(trendi
 node trending.mjs --selftest      # 解析器自检（HTML 改版后先跑这个）
 ```
 
-跑完后按 skill 流程写 `report-zh.md`：只两层——「与你相关」（种子信号+方向命中，≤15 条展开）和「全站速览」（一段带过）。
+跑完后按 skill 流程写 `report-zh.md`：**以「本期新增」为主体**（脚本已自动 diff 上期），上期已报的不再展开。
 
 ## 文件
 
 - `trending.mjs` — 抓取 + 解析 + 分类（标签正则只是粗筛）
 - `seeds.json` — 种子清单：你在用的 repo、关注的作者、关心的 topic。**发现新工具/新作者时更新它**
+- `seen.json` — 上期所有榜单 repo 集合 + 日期，用于自动算「本期新增」。删掉则下期无对比基线
 - `history.json` — 各 repo 首见/末见/在榜期数，删掉即重置
-- `report.md` — 脚本底稿
+- `report.md` — 脚本底稿（第一节是「🆕 本期新增」）
 - `report-zh.md` — 中文报告（会话产出）
 
 ## 排查

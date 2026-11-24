@@ -22,6 +22,7 @@ const args = Object.fromEntries(process.argv.slice(2).map(a => {
 const SINCE = args.since || 'weekly';
 const OUT = join(ROOT, args.out || 'report.md');
 const HISTORY = join(ROOT, 'history.json');
+const SEEN = join(ROOT, 'seen.json');
 
 function decodeEntities(s) {
   return s
@@ -122,6 +123,9 @@ async function mainAsync() {
   const history = existsSync(HISTORY) ? JSON.parse(readFileSync(HISTORY, 'utf8')) : {};
   const seeds = JSON.parse(readFileSync(join(ROOT, 'seeds.json'), 'utf8'));
   const seedRepos = new Set(seeds.repos || []);
+  const prevSeen = existsSync(SEEN) ? JSON.parse(readFileSync(SEEN, 'utf8')) : null;
+  const seenBefore = prevSeen ? new Set(prevSeen.repos) : null;
+  const seenDate = prevSeen ? prevSeen.date : '';
   const dedupeBy = rs => { const s = new Set(); return rs.filter(r => !s.has(r.repo) && (s.add(r.repo), true)); };
 
   // 种子信号收紧：只保留「近 90 天新建」或「命中方向标签」的项目，砍掉常年不变的老 repo 和无关长尾
@@ -158,16 +162,27 @@ async function mainAsync() {
   const fmt = r => {
     const tags = classify(r);
     const extra = r.created ? ` _${r.created} 新建_` : '';
-    return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra} — ${r.desc || '(no description)'}`;
+    const isNew = seenBefore && !seenBefore.has(r.repo) ? ' **🆕本期新增**' : '';
+    return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra}${isNew} — ${r.desc || '(no description)'}`;
   };
   // 各榜独立去重：只去掉与更短窗口重复的（日→周→月→季→年），长窗口重复保留
   const weekSet = new Set(weekly.map(r => r.repo));
   const minusWeek = rs => rs.filter(r => !weekSet.has(r.repo));
 
+  // 本期新增判定：和上期 seen.json 比，跨榜统一标 🆕，报告只需读新增项
+  const allNow = [...dedupeBy(authorSignals), ...dedupeBy(topicSignals), ...daily, ...weekly,
+    ...minusWeek(monthly), ...minusWeek(quarter), ...minusWeek(year)];
+  const freshList = seenBefore ? allNow.filter(r => !seenBefore.has(r.repo)) : [];
+  writeFileSync(SEEN, JSON.stringify({ date: today, repos: [...new Set(allNow.map(r => r.repo))] }, null, 2));
+
   const longBurn = weekly.filter(r => history[r.repo].weeks >= 4)
     .sort((a, b) => history[b.repo].weeks - history[a.repo].weeks);
   const report = [
     `# GitHub Trending 全窗口（${today}）`,
+    ``,
+    seenBefore
+      ? `## 🆕 本期新增（相对上期 ${seenDate}，${dedupeBy(freshList).length} 个）\n${dedupeBy(freshList).length ? dedupeBy(freshList).sort((a, b) => b.stars - a.stars).map(fmt).join('\n') : '_无新增_'}`
+      : `## 🆕 本期新增\n_首次运行，无对比基线_`,
     ``,
     `## 种子信号（你在用/关注的人和主题）`,
     `### 种子作者近 30 天活跃（${dedupeBy(authorSignals).length}）`,
@@ -196,6 +211,31 @@ async function mainAsync() {
     ``,
   ].join('\n');
   writeFileSync(OUT, report);
-  console.log(`seeds: authors ${dedupeBy(authorSignals).length}, topics ${dedupeBy(topicSignals).length}; daily ${daily.length}, weekly ${weekly.length} (${newOnes.length} new), monthly ${monthly.length} -> ${OUT}`);
+  console.log(`新增 ${dedupeBy(freshList).length} 个（vs ${seenDate || '首次'}）; seeds ${dedupeBy(authorSignals).length}+${dedupeBy(topicSignals).length}, daily ${daily.length}, weekly ${weekly.length}, monthly ${monthly.length} -> ${OUT}`);
 }
+// self-test: 固定 HTML/数据验证解析器与新增 diff，不发网络请求
+if (args.selftest) {
+  const html = `<article class="Box-row">
+    <h2 class="h3"><a href="/aaa/bbb"></a></h2>
+    <p class="col-9 color-fg-muted my-1 pr-4">A &amp; B trading tool</p>
+    <span itemprop="programmingLanguage">Rust</span>
+    <a href="/aaa/bbb/stargazers" class="Link--muted d-inline-block mr-3"><svg octicon-star width="16"></svg> 12,345</a>
+    <span class="d-inline-block float-sm-right">2,300 stars this week</span>
+  </article>`;
+  const r = parseTrending(html);
+  console.assert(r.length === 1, 'count');
+  console.assert(r[0].repo === 'aaa/bbb', 'repo');
+  console.assert(r[0].desc === 'A & B trading tool', 'desc');
+  console.assert(r[0].stars === 12345, `stars got ${r[0].stars}`);
+  console.assert(r[0].lang === 'Rust', 'lang');
+  console.assert(r[0].delta === 2300, 'delta');
+  console.assert(classify(r[0]).includes('📈 投资'), 'classify trading');
+  // 新增 diff：上期有 a/a，本期 a/a + b/b → 只有 b/b 是新增
+  const before = new Set(['a/a']);
+  const fresh = [{ repo: 'a/a' }, { repo: 'b/b' }].filter(x => !before.has(x.repo));
+  console.assert(fresh.length === 1 && fresh[0].repo === 'b/b', 'fresh diff');
+  console.log('selftest ok');
+  process.exit(0);
+}
+
 main().catch(e => { console.error(String(e)); process.exit(1); });

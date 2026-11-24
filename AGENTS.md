@@ -9,12 +9,11 @@ GitHub Trending 追踪器：定期抓取 trending，对比历史找出新晋项�
 ## 使用
 
 ```bash
-node trending.mjs                 # 抓 weekly，写 history.json + report-weekly.md（英文底稿）
+node trending.mjs                 # 五窗口报告：本周/本月(trending) + 季度/半年/一年(Search API 新建+star排序)
 node trending.mjs --selftest      # 解析器自检（HTML 改版后先跑这个）
-node trending.mjs --since=daily   # daily / weekly / monthly
 ```
 
-每次跑完，读 `report-weekly.md`，把新上榜项目人工翻成中文写入 `report-zh.md`（用户中文阅读优先）。
+每次跑完，读 `report-weekly.md`，把内容整理翻成中文写入 `report-zh.md`（用户中文阅读优先，单一文档五个小节）。
 
 ## 文件
 

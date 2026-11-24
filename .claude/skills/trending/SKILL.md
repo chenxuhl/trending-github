@@ -11,21 +11,25 @@ description: 抓取 GitHub Trending 并产出中文周报。触发词：跑 tren
    ```bash
    node trending.mjs
    ```
-   输出 `report-weekly.md`（英文底稿）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
+   输出 `report-weekly.md`（英文/中文混合底稿，含五窗口）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
 
-2. 读 `report-weekly.md`。重点两类：
-   - 🆕 新上榜：按 delta 排序已排好
-   - 🔥 持续在榜 ≥4 期：用户最在意这类（Orca 式教训：火了很久才知道）
+2. 读 `report-weekly.md`。五个窗口，重点：
+   - 本周（trending weekly）：新晋热门
+   - 🔥 持续在榜 ≥4 期：用户最在意（Orca 式教训：火了很久才知道）
+   - 本月（trending monthly）
+   - 本季度 / 半年 / 一年（Search API：窗口内新建 + star 排序）——长期价值项目，用户核心痛点所在
 
 3. 写 `report-zh.md`（覆盖式，每期一份）：
    - 全文中文，repo 名/语言/链接保留原文
-   - 每条翻译描述为一两行中文，注明 star 总数和本期增量
-   - 按 ⚡ 提效 / 💰 副业 / 💼 求职 / 📈 投资 / 其他 分组（脚本已打标，照抄分组即可）
+   - **单一文档五个小节：本周 / 本月 / 本季度 / 半年 / 一年**，照底稿结构
+   - 每条翻译描述为一两行中文，注明 star 总数和（有增量的）本期增量
+   - 按脚本打的标签分组呈现：⚡ 提效 / 💰 副业 / 💼 求职 / 📈 投资 / 无标签
      - 💰 副业：能直接变成 SaaS/产品/付费服务的项目（模板、boilerplate、支付、电商）
      - 💼 求职：面试、简历、刷题、职业相关
      - 📈 投资：交易、量化、加密、行情工具
      - 一个项目可命中多标签；评估价值时点明「这个项目对你副业/求职/投资的用处」
    - 持续在榜项目单独成节，标「在榜 N 期」，给出为什么持续火的判断
+   - 季度/半年/一年窗口：重点挑与用户方向相关的项目展开，其余压缩为一行
 
 4. 回复用户：3-5 行摘要，点名本期最值得看的 2-3 个项目及理由（按用户两个方向评估价值），并附 `report-zh.md` 路径。
 

@@ -26,76 +26,57 @@
 
 以下为全量条目（备查，不必逐条读）。
 
-## 种子信号：作者近 30 天活跃（18）
+## 种子信号（你在用/关注的作者与主题，方向命中优先）
 
 | 项目 | 星数 | 建于 | 标签 | 一句话 |
 |---|---|---|---|---|
-| [mattpocock/skills](https://github.com/mattpocock/skills) | 331k | 02-03 | ⚡ | Matt Pocock 开源自己的 .agents 目录，工程实践型技能 |
-| [DeepInfer](https://github.com/deepseek-ai/DeepInfer) | 26k | 10-16 | — | DeepSeek 官方高性能大模型推理框架 |
-| [dsh-superagent-prototype](https://github.com/deepseek-ai/dsh-superagent-prototype) | 24k | 10-31 | ⚡ | DeepSeek 自主 agent 系统原型，dsh 生态下一步 |
-| [sandcastle](https://github.com/mattpocock/sandcastle) | 9.2k | 03-17 | ⚡ | TypeScript 编排沙箱化编码 agent |
-| [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) | 8.6k | 06-11 | ⚡ | Anthropic 官方 Claude Agent SDK（Python） |
-| [chat-demo](https://github.com/deepseek-ai/chat-demo) | 5.4k | 11-12 | — | DeepSeek 聊天示例（本周新发布） |
-| [commerce-agents](https://github.com/anthropics/commerce-agents) | 3.5k | 09-01 | ⚡💰 | Claude 商务 agent 官方参考蓝图（零售/电信/娱乐） |
-| [oss-scanner](https://github.com/anthropics/oss-scanner) | 1.8k | 10-08 | — | Anthropic 开源扫描器 |
-| [DeepJIT](https://github.com/deepseek-ai/DeepJIT) | 477 | 09-08 | — | xPU kernel JIT 编译轻量库 |
-| [uplifting-biomolecular-modeling](https://github.com/anthropics/uplifting-biomolecular-modeling) | 393 | 09-17 | — | 生物分子建模 |
-| [DeepEP-Ascend](https://github.com/deepseek-ai/DeepEP-Ascend) | 301 | 09-30 | — | 华为昇腾 NPU 通信库 |
-| [ai-hero-cli](https://github.com/mattpocock/ai-hero-cli) | 155 | 08-13 | ⚡ | AI Hero CLI |
-| [orca-plugins](https://github.com/stablyai/orca-plugins) | 41 | 07-13 | 💰📈 | Orca 官方插件市场索引，写插件机会窗口 |
-| [cookout](https://github.com/mattpocock/cookout) | 10 | 11-22 | — | 新 repo，无描述 |
-| [orca-community-plugins](https://github.com/stablyai/orca-community-plugins) | 9 | 10-25 | — | Orca 社区插件目录 |
-| [orca-hourly](https://github.com/stablyai/orca-hourly) | 2 | 07-31 | ⚡ | Orca 每小时 macOS 构建版（未验证） |
-| [cohort-005-project-fork-3](https://github.com/mattpocock/cohort-005-project-fork-3) | 0 | 10-28 | — | 课程项目 fork |
-| [orca-community-mirror](https://github.com/stablyai/orca-community-mirror) | 0 | 10-30 | — | 社区插件发布镜像（只读） |
-
-## 种子信号：topic 近 90 天新项目（43）
-
-| 项目 | 星数 | 建于 | 标签 | 一句话 |
-|---|---|---|---|---|
-| [cleanyourtv](https://github.com/Gathin23/cleanyourtv) | 60k | 10-17 | — | Wi-Fi 给 Android/Google TV 去广告，变 Apple TV 风格 |
 | [magpie](https://github.com/yetone/magpie) | 40k | 09-23 | ⚡ | 菜单栏统一给 agent 换模型：Codex 用 DeepSeek、Claude Code 用 Kimi |
-| [dsh-Go](https://github.com/ccch1mneyyy/dsh-Go) | 31k | 10-25 | — | dsh-go：手机本机跑 DeepSeek Harness，还能遥控电脑 |
-| [elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) | 22k | 09-13 | ⚡ | Google 开源 agent 设计/评审插件 |
-| [lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) | 20k | 09-26 | — | Claude Code 代码做片风格工具箱：99 种现成风格（中英双语） |
-| [ARTEX](https://github.com/BaaRai/ARTEX) | 18k | 10-08 | — | AI 自主渗透测试系统 |
-| [solidcraft](https://github.com/tangency-labs/solidcraft) | 18k | 10-07 | ⚡ | 纯 Rust 参数化 3D CAD，支持 MCP 自动化 |
-| [rea-video](https://github.com/JuneYaooo/rea-video) | 12k | 10-29 | ⚡ | 逐镜头逆向视频：拍的/AI 生成/代码做的，教你复刻（中文） |
-| [AIHOT](https://github.com/KKKKhazix/AIHOT) | 11k | 09-28 | — | 自己找热点、写日报的网站框架，换信源即你的行业站（中文） |
-| [open-seo-mcp-skills](https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills) | 10k | 08-29 | ⚡ | 免费 SEO MCP + GEO 技能：关键词、排名、审计 |
-| [replica-skill](https://github.com/Jakeschincariol/replica-skill) | 10k | 10-03 | ⚡ | 11 个免费技能克隆任意 app：逆向、重建、测试 |
-| [ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill) | 10k | 09-03 | ⚡ | 编码 agent 的本地视频剪辑：42 个 FFmpeg 工具 + MCP |
-| [everything](https://github.com/HeyPuter/everything) | 9.4k | 10-13 | — | 从零重建并开源全世界的软件 |
-| [TokenEconomizer](https://github.com/microsoft/TokenEconomizer) | 8k | 10-13 | ⚡ | 微软：编码 agent 经验驱动的黑盒成本控制 |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | 331k | 02-03 | ⚡ | Matt Pocock 开源自己的 .agents 目录，工程实践型技能 |
+| [dsh-superagent-prototype](https://github.com/deepseek-ai/dsh-superagent-prototype) | 24k | 10-31 | ⚡ | DeepSeek 自主 agent 系统原型，dsh 生态下一步 |
 | [dossier](https://github.com/AienTech/dossier) | 5.5k | 10-03 | 💼 | 自托管求职+简历 builder：按 JD 定制简历和求职信 |
-| [BeautifulRust](https://github.com/morganlinton/BeautifulRust) | 2.1k | 10-23 | ⚡ | 教 agent 写、审、移植地道 Rust 的技能 |
-| [agent-purge](https://github.com/ZiChuanLan/agent-purge) | 2.1k | 10-25 | ⚡ | 一套 persona 注入所有编码 agent 系统提示 |
-| [ALTA](https://github.com/kyky2347/ALTA) | 1.1k | 08-27 | ⚡📈 | 自主 LLM 交易系统 |
-| [playwright_mcp](https://github.com/oss-invisible/playwright_mcp) | 855 | 09-29 | ⚡ | 隐身 Playwright MCP：反 bot 检测 |
-| [open-net-worth](https://github.com/open-net-worth-ai/open-net-worth) | 726 | 10-15 | ⚡📈 | 自托管个人财务 agent：预算、投资、下单 |
+| [commerce-agents](https://github.com/anthropics/commerce-agents) | 3.5k | 09-01 | ⚡💰 | Claude 商务 agent 官方参考蓝图（零售/电信/娱乐） |
 | [how-to-survive-unemployment](https://github.com/AIPMAndy/how-to-survive-unemployment) | 602 | 10-09 | 💼 | 中文裁员自救手册：N+1、失业金、社保，附政策原文 |
 | [saas-growth-agents](https://github.com/Pluviobyte/saas-growth-agents) | 554 | 10-30 | ⚡💰 | SaaS 增长杂活给 agent：新词雷达、关键词、竞品、外链 |
-| [ai-paper-system](https://github.com/FoShmily/ai-paper-system) | 540 | 09-29 | — | AI 论文系统：生成、降 AIGC、答辩 PPT，OEM 白标招商 |
 | [risk-aware-trading-agents](https://github.com/jackson-cmd/risk-aware-trading-agents) | 475 | 11-12 | ⚡📈 | 美股 LLM 交易 agent：新闻回测防未来函数 |
-| [openchart](https://github.com/longsurf-ai/openchart) | 411 | 10-05 | ⚡📈 | OSS 交易工作台 |
+| [open-net-worth](https://github.com/open-net-worth-ai/open-net-worth) | 726 | 10-15 | ⚡📈 | 自托管个人财务 agent：预算、投资、下单 |
 | [jev-job-search](https://github.com/qbeka/jev-job-search) | 384 | 10-02 | 💼 | 实习/校招自动填申请表、检查答案 |
 | [Trader-Archives](https://github.com/suoha888/Trader-Archives) | 375 | 09-12 | 📈 | 推特实战交易员推文收录数据湖（中文） |
-| [aurelio-finance](https://github.com/LosaLosSantos/aurelio-finance) | 352 | 10-06 | 📈 | 个人财务 app + AI 顾问：净资产、ETF、债务 |
+| [zeus-options-terminal](https://github.com/jackson-cmd/zeus-options-terminal) | 260 | 11-12 | ⚡📈 | 自托管期权终端：持仓、Greeks、盈亏、离场提醒 |
 | [HFTENGINE](https://github.com/mirkovicdev/HFTENGINE) | 347 | 09-16 | 📈 | 做市回测回放台：订单簿+排队位置逐单复盘 |
-| [GiroCrab](https://github.com/GiroCrab/GiroCrab) | 337 | 11-09 | — | macOS/iOS 本地优先银行 app（德国 FinTS/PSD2） |
-| [qanat](https://github.com/fidetolabs/qanat) | 334 | 09-05 | ⚡ | 投研数据平台：point-in-time 金融指标 |
-| [bankmcp](https://github.com/noskillish/bankmcp) | 331 | 09-07 | ⚡ | 只读 MCP 让 AI 读你的银行账户 |
 | [res](https://github.com/alextnetto/res) | 318 | 10-15 | ⚡💰 | 浏览器逆向 SaaS 成知识库，用于重建 |
 | [job-auto-apply](https://github.com/Anshul439/job-auto-apply) | 282 | 08-31 | ⚡💼 | Wellfound/Instahyre 一键批量投递 |
-| [order-flow-screener](https://github.com/zadescoxp/order-flow-screener) | 278 | 10-08 | — | 现货/永续订单流筛选器 |
-| [sentetrader](https://github.com/kingcharleslzy-ai/sentetrader) | 263 | 10-18 | — | 中文：AI 私人交易助理 |
-| [zeus-options-terminal](https://github.com/jackson-cmd/zeus-options-terminal) | 260 | 11-12 | ⚡📈 | 自托管期权终端：持仓、Greeks、盈亏、离场提醒 |
-| [bytx](https://github.com/byttrade/bytx) | 206 | 11-03 | 📈 | 交易工具（无描述） |
-| [awesome-submitlist](https://github.com/alvinunreal/awesome-submitlist) | 190 | 09-06 | 💰📈 | 300+ 无垃圾提交渠道：目录、launcher、社区 |
 | [how-profitable-startups-grow](https://github.com/yihui-dev/how-profitable-startups-grow) | 185 | 11-03 | 💰 | 740+ 真实创业公司按验证营收分档，每周更新 |
 | [app-ideas-from-reddit](https://github.com/theomarsoliman/app-ideas-from-reddit) | 56 | 09-20 | 💰 | 614 个真实 Reddit 需求的 app 点子 |
 | [free-backlink-sources](https://github.com/sherotree/free-backlink-sources) | 53 | 09-07 | 💰 | 免费外链源：Product Hunt、HN、目录站 |
-| [huolema](https://github.com/wlk666888/huolema) | 50 | 10-29 | — | 中文：独立作品发现平台，免费发布网站/AI 工具/小程序 |
+| [open-seo-mcp-skills](https://github.com/Ryze-AI-Adgent/open-seo-mcp-skills) | 10k | 08-29 | ⚡ | 免费 SEO MCP + GEO 技能：关键词、排名、审计 |
+| [replica-skill](https://github.com/Jakeschincariol/replica-skill) | 10k | 10-03 | ⚡ | 11 个免费技能克隆任意 app：逆向、重建、测试 |
+| [TokenEconomizer](https://github.com/microsoft/TokenEconomizer) | 8k | 10-13 | ⚡ | 微软：编码 agent 经验驱动的黑盒成本控制 |
+| [sandcastle](https://github.com/mattpocock/sandcastle) | 9.2k | 03-17 | ⚡ | TypeScript 编排沙箱化编码 agent |
+| [orca-plugins](https://github.com/stablyai/orca-plugins) | 41 | 07-13 | 💰📈 | Orca 官方插件市场索引，写插件机会窗口 |
+| [orca-community-plugins](https://github.com/stablyai/orca-community-plugins) | 9 | 10-25 | — | Orca 社区插件目录 |
+| [DeepInfer](https://github.com/deepseek-ai/DeepInfer) | 26k | 10-16 | — | DeepSeek 官方高性能大模型推理框架 |
+| [chat-demo](https://github.com/deepseek-ai/chat-demo) | 5.4k | 11-12 | — | DeepSeek 聊天示例（本周新发布） |
+| [qanat](https://github.com/fidetolabs/qanat) | 334 | 09-05 | ⚡ | 投研数据平台：point-in-time 金融指标 |
+| [bankmcp](https://github.com/noskillish/bankmcp) | 331 | 09-07 | ⚡ | 只读 MCP 让 AI 读你的银行账户 |
+| [aurelio-finance](https://github.com/LosaLosSantos/aurelio-finance) | 352 | 10-06 | 📈 | 个人财务 app + AI 顾问：净资产、ETF、债务 |
+| [ALTA](https://github.com/kyky2347/ALTA) | 1.1k | 08-27 | ⚡📈 | 自主 LLM 交易系统 |
+| [openchart](https://github.com/longsurf-ai/openchart) | 411 | 10-05 | ⚡📈 | OSS 交易工作台 |
+| [rea-video](https://github.com/JuneYaooo/rea-video) | 12k | 10-29 | ⚡ | 逐镜头逆向视频：拍的/AI 生成/代码做的，教你复刻（中文） |
+| [awesome-submitlist](https://github.com/alvinunreal/awesome-submitlist) | 190 | 09-06 | 💰📈 | 300+ 无垃圾提交渠道：目录、launcher、社区 |
+| [AIHOT](https://github.com/KKKKhazix/AIHOT) | 11k | 09-28 | — | 自己找热点、写日报的网站框架，换信源即你的行业站（中文） |
+| [dsh-Go](https://github.com/ccch1mneyyy/dsh-Go) | 31k | 10-25 | — | dsh-go：手机本机跑 DeepSeek Harness，还能遥控电脑 |
+| [elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) | 22k | 09-13 | ⚡ | Google 开源 agent 设计/评审插件 |
+| [ffmpeg-skill](https://github.com/kajisho5/ffmpeg-skill) | 10k | 09-03 | ⚡ | 编码 agent 的本地视频剪辑：42 个 FFmpeg 工具 + MCP |
+| [agent-purge](https://github.com/ZiChuanLan/agent-purge) | 2.1k | 10-25 | ⚡ | 一套 persona 注入所有编码 agent 系统提示 |
+| [playwright_mcp](https://github.com/oss-invisible/playwright_mcp) | 855 | 09-29 | ⚡ | 隐身 Playwright MCP：反 bot 检测 |
+| [claude-agent-sdk-python](https://github.com/anthropics/claude-agent-sdk-python) | 8.6k | 06-11 | ⚡ | Anthropic 官方 Claude Agent SDK（Python） |
+| [BeautifulRust](https://github.com/morganlinton/BeautifulRust) | 2.1k | 10-23 | ⚡ | 教 agent 写、审、移植地道 Rust 的技能 |
+| [cleanyourtv](https://github.com/Gathin23/cleanyourtv) | 60k | 10-17 | — | Wi-Fi 给 Android/Google TV 去广告，变 Apple TV 风格 |
+| [solidcraft](https://github.com/tangency-labs/solidcraft) | 18k | 10-07 | ⚡ | 纯 Rust 参数化 3D CAD，支持 MCP 自动化 |
+| [lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) | 20k | 09-26 | — | Claude Code 代码做片风格工具箱：99 种现成风格（中英双语） |
+| [ARTEX](https://github.com/BaaRai/ARTEX) | 18k | 10-08 | — | AI 自主渗透测试系统 |
+
+一句话带过（与方向无关或信息量低）：everything（9.4k）、ai-paper-system（540）、oss-scanner（1.8k）、DeepJIT（477）、uplifting-biomolecular-modeling（393）、DeepEP-Ascend（301）、ai-hero-cli（155）、cookout（10 新无描述）、orca-hourly（2 构建版）、cohort-005-project-fork-3（0）、orca-community-mirror（0 镜像）、GiroCrab（337 德国银行）、order-flow-screener（278）、sentetrader（263）、bytx（206 无描述）、huolema（50）。
 
 ## 日榜（trending daily，16）
 

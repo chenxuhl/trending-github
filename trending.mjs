@@ -124,18 +124,21 @@ async function mainAsync() {
   const seedRepos = new Set(seeds.repos || []);
   const dedupeBy = rs => { const s = new Set(); return rs.filter(r => !s.has(r.repo) && (s.add(r.repo), true)); };
 
-  // 1) 种子信号：作者近 30 天有 push 的 repo
+  // 种子信号收紧：只保留「近 90 天新建」或「命中方向标签」的项目，砍掉常年不变的老 repo 和无关长尾
+  const seedKeep = r => (r.created && Date.now() - new Date(r.created) < 90 * 864e5) || classify(r).length > 0;
+
+  // 1) 种子信号：作者近 30 天有 push 的 repo（再过 created/标签筛选）
   const authorSignals = [];
   for (const a of (seeds.authors || [])) {
     const repos = await listAuthorRepos(a);
-    authorSignals.push(...repos.filter(r => !seedRepos.has(r.repo) && Date.now() - new Date(r.pushed) < 30 * 864e5));
+    authorSignals.push(...repos.filter(r => !seedRepos.has(r.repo) && seedKeep(r) && Date.now() - new Date(r.pushed) < 30 * 864e5));
   }
-  // 2) 种子 topic 近 90 天新项目
+  // 2) 种子 topic 近 90 天新项目（再过标签筛选）
   const topicSince = new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10);
   const topicSignals = [];
   for (const t of (seeds.topics || [])) {
     const repos = await searchRepo(`topic:${t} created:>${topicSince}`);
-    topicSignals.push(...repos.filter(r => !seedRepos.has(r.repo)));
+    topicSignals.push(...repos.filter(r => !seedRepos.has(r.repo) && seedKeep(r)));
   }
 
   // 3) 常规五窗口：日/周/月(trending) + 季/年(Search API)

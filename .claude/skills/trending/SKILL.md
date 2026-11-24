@@ -14,7 +14,7 @@ description: 抓取 GitHub Trending 并产出中文报告。触发词：跑 tren
    输出 `report.md`（底稿：种子信号 + 日/周/月/季/年五榜）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
 
 2. 读 `report.md`。结构（照搬到底稿顺序）：
-   - 种子信号（`seeds.json` 作者新 repo + topic 新项目）
+   - 种子信号（`seeds.json` 作者新 repo + topic 新项目；脚本已收紧：仅「近 90 天新建」或「命中方向标签」的项目）
    - 日榜 / 周榜（trending）
    - 🔥 持续在榜 ≥4 期
    - 月榜（trending）/ 季榜、年榜（Search API 新建 + star 排序）

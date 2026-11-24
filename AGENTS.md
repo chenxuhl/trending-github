@@ -2,6 +2,10 @@
 
 GitHub Trending 追踪器：定期抓取 trending，对比历史找出新晋项目和持续热门项目，避免「火了很久才知道」。
 
+## 日常执行
+
+想跑一次完整流程（抓取 + 中文报告）时，用 `/trending`（`.claude/skills/trending/SKILL.md`，内含用户偏好：中文优先、提效/赚钱两方向、标注在榜期数）。
+
 ## 使用
 
 ```bash

@@ -41,10 +41,12 @@ function parseTrending(html) {
   return repos;
 }
 
-// 关注方向：提效 + 赚钱。关键词可自行增删，命中即归类。
+// 关注方向：提效 + 赚钱（副业/求职/投资多维）。关键词可自行增删，命中即归类。
 const INTERESTS = {
   '⚡ 提效': /agent|skill|mcp|automat|workflow|pipeline|editor|cli|devtools|productiv|code.?review|boilerplate|scaffold|rpa|no.?code/i,
-  '💰 赚钱': /trading|finance|crypto|stock|market|payment|billing|commerce|shop|ecommerce|monet|business|revenue|fintech|invoice|pos/i,
+  '💰 副业': /saas|side.?project|indie|startup|landing|template|boilerplate|scaffold|starter|monet|subscription|stripe|payment|billing|commerce|shop|ecommerce|marketplace|portfolio/i,
+  '💼 求职': /interview|resume|cv|job|career|hiring|leetcode|algorithm|面试|简历/i,
+  '📈 投资': /trading|finance|crypto|stock|market|fintech|quant|backtest|portfolio|forex|bitcoin|defi/i,
 };
 function classify(r) {
   const text = `${r.repo} ${r.desc}`;

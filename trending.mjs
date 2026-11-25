@@ -51,14 +51,15 @@ function parseTrending(html) {
 
 // 关注方向打分。2026 年「agent/skill」几乎人人都有，不再是信号，只作弱加分。
 // 强词 = 直接对应用户的具体场景（能赚钱/能省时间的具体动作），弱词 = 领域背景噪音。
+// 所有词用 \b 词边界：否则 formats→ats(求职)、optional→option(投资)、directory(副业) 等子串假阳性。
 const STRONG = {
-  '💰 副业': /saas|side.?hustle|side.?project|indie.?(hacker|maker)|monetiz|revenue|stripe|payment|billing|subscription|ecommerce|shopify|dropship|affiliate|seo|backlink|product.?hunt|launch|directory|app.?idea|startup.?idea|freelance|接单|变现|副业/i,
-  '💼 求职': /resume|cv.?builder|cover.?letter|job.?(search|board|appl|hunt)|interview.?(prep|question)|ats|career|leetcode|hiring|layoff|unemploy|面试|简历|求职|裁员|失业/i,
-  '📈 投资': /trading|trade.?(bot|agent|engine)|backtest|quant|portfolio.?(track|manag)|stock|equit|option|futures|forex|crypto|defi|net.?worth|personal.?finance|budget|broker|market.?(data|maker)|交易|投资|理财|量化/i,
-  '⚡ 提效': /code.?review|refactor|debug|test.?(gen|coverage)|ci\/cd|devops|lint|token.?(cost|saving|reduc)|context.?(manag|window)|memory|prompt.?(optimi|engineer)|benchmark|observab|monitor|profil|migrat|document(ation)?.?gen|boilerplate|scaffold|template.?repo|自动化|提效/i,
+  '💰 副业': /\b(saas|side.?hustle|side.?project|indie.?(hacker|maker)s?|monetiz\w*|revenue|stripe|paywall|subscription.?(revenue|billing)|ecommerce|shopify|dropship\w*|affiliate|seo|backlinks?|product.?hunt|micro.?saas|app.?ideas?|startup.?ideas?|freelanc\w*)\b|接单|变现|副业/i,
+  '💼 求职': /\b(resume|cv.?builder|cover.?letter|job.?(search|board|appl\w*|hunt\w*)|interview.?(prep|question)s?|ats.?(friendly|optimiz\w*|resume)|career.?(ops|coach|path)|leetcode|hiring|layoffs?|unemploy\w*)\b|面试|简历|求职|裁员|失业/i,
+  '📈 投资': /\b(trading|trade.?(bot|agent|engine|journal)|backtest\w*|quant\w*|portfolio.?(track\w*|manag\w*)|stocks?|equit\w*|options?.?(trading|terminal|chain|greeks)|futures|forex|crypto|defi|net.?worth|personal.?finance|budget\w*|brokerage|market.?(data|maker|making)|candlestick|indicators?)\b|交易|投资|理财|量化|炒股/i,
+  '⚡ 提效': /\b(code.?review|refactor\w*|debugg\w*|test.?(gen\w*|coverage)|ci.?cd|devops|linter|token.?(cost|saving|reduc\w*)|context.?(manag\w*|window)|prompt.?(optimi\w*|engineer\w*)|observability|profil(er|ing)|doc(umentation)?.?gen\w*|boilerplate|scaffold\w*|codegen)\b|自动化|提效/i,
 };
 // 弱词：命中只在已有强标签时加一分权重，自己不单独产生标签
-const WEAK = /agent|skill|mcp|cli|automat|workflow|llm|ai/i;
+const WEAK = /\b(agents?|skills?|mcp|cli|automat\w*|llm|ai)\b/i;
 
 function classify(r) {
   const text = `${r.repo} ${r.desc}`;
@@ -288,6 +289,11 @@ if (args.selftest) {
   // 长期在榜衰减
   const base = { repo: 'd/d', desc: 'Stock trading backtest engine for quant portfolio management', stars: 400 };
   console.assert(score(base, { 'd/d': { weeks: 20 } }) < score(base, {}), 'streak decay');
+  // 词边界：子串不该产生假阳性（实测踩过的四个）
+  console.assert(!classify({ repo: 'a/Filee', desc: 'Convert 263 formats offline by drag & drop' }).length, 'formats != ats');
+  console.assert(!classify({ repo: 'a/Strata', desc: 'one-click install, optional image input' }).length, 'optional != option');
+  console.assert(!classify({ repo: 'a/skills', desc: 'Straight from my .agents directory.' }).length, 'directory != side-hustle');
+  console.assert(!classify({ repo: 'a/worldmonitor', desc: 'Geopolitical monitoring dashboard' }).length, 'monitoring != productivity');
   // 新增 diff：上期有 a/a，本期 a/a + b/b → 只有 b/b 是新增
   const before = new Set(['a/a']);
   const fresh = [{ repo: 'a/a' }, { repo: 'b/b' }].filter(x => !before.has(x.repo));

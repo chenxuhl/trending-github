@@ -11,7 +11,13 @@ description: 抓取 GitHub Trending 并产出中文报告。触发词：跑 tren
    ```bash
    node trending.mjs
    ```
-   输出 `report.md`（底稿：种子信号 + 日/周/月/季/年五榜）+ 更新 `history.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
+   输出 `report.md`（底稿：早期机会 + 种子信号 + 日/周/月/季/年榜）+ 更新 `history.json`/`seen.json`。star 数异常（全相同/过小）→ GitHub 改版，跑 `node trending.mjs --selftest` 修 `parseTrending` 正则。
+
+   各榜机制（2026-11-25 审查后）：
+   - 日/周/月 = GitHub 官方 trending，全量，按官方增速算法
+   - 季/年 = 窗口内新建 + star 总数 top30（gh 认证，稳定）
+   - 🫰 早期机会 = 28 个探针词 × sort=stars 搜 60 天内新建（30~3000 星）+ 钱标签 + 质量闸门，按「日均涨星 70% + 近期活跃 30%」复合排序
+   - 💎 精华 = score() 价值分，created 字段已跨源回填（排序不被数据源决定）
 
 2. 读 `report.md`。**先看第一节「🫰 早期机会」**——这是用户的核心诉求：赚钱门路的窗口期在项目 2~8 周、星数还低（30~3000）、日均涨星正在起飞时。这节按增速排序，是报告的第一主角。其次「💎 精华候选」和「🆕 本期新增」。
    - 🫰 早期机会（60 天内新建 + 钱💰💼📈命中 + 质量闸门，按日均涨星排序）

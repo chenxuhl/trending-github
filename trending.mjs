@@ -133,17 +133,26 @@ function mapItems(data) {
 }
 
 // ===== 🫰 早期机会：赚钱门路的窗口期在项目 2~8 周、星数还低、增速已起飞时 =====
-// 逻辑：60 天内新建 + 星 30~3000 + 钱关键词（副业/求职/投资）+ 描述像产品不是库。
-// 排序按日均涨星（stars/age），不是星数——star 增速是「关注的人正在变多」的实时信号。
+// 逻辑：60 天内新建 + 星 30~3000 + 钱关键词（副业/求职/投资）+ 质量闸门。
+// 候选池：探针词 + sort=stars（修正：sort=updated 拿到的是「最近 push 的」，大量当天新建项目混入，
+// 真正起飞的项目反而不在。stars 排序保证池子里的都是已验证有增长的）。
+// 排序按日均涨星（stars/age）+ 近期活跃加权（pushed<7d）。
+const EARLY_PROBES = [
+  // 副业
+  'saas', 'side project', 'monetize', 'stripe', 'freelance', 'passive income',
+  'newsletter', 'directory', 'seo', 'affiliate', 'shopify', 'ecommerce', 'micro saas',
+  // 投资
+  'trading', 'backtest', 'quantitative', 'options trading', 'crypto bot', 'portfolio tracker',
+  // 求职
+  'resume builder', 'job search', 'interview prep', 'cover letter',
+];
 async function fetchEarlyOpportunities() {
   const since = new Date(Date.now() - 60 * 864e5).toISOString().slice(0, 10);
   const moneyTag = Object.keys(STRONG).filter(t => /💰|💼|📈/.test(t));
-  // Search API 一次 query 拿不稳；用多个具体词分头搜再合并，每个取 30
-  const probes = ['saas', 'side project', 'monetize', 'stripe', 'freelance', 'trading', 'backtest', 'resume', 'job search', 'passive income', 'newsletter', 'directory', 'seo'];
   const all = new Map();
-  for (const p of probes) {
+  for (const p of EARLY_PROBES) {
     const res = await fetch(
-      `https://api.github.com/search/repositories?q=${encodeURIComponent(p)}+created:%3E${since}+stars:%3E30&sort=updated&order=desc&per_page=30`,
+      `https://api.github.com/search/repositories?q=${encodeURIComponent(p)}+created:%3E${since}+stars:%3E30&sort=stars&order=desc&per_page=15`,
       { headers: authHeaders },
     );
     if (!res.ok) continue;
@@ -151,6 +160,7 @@ async function fetchEarlyOpportunities() {
       all.set(i.full_name, {
         repo: i.full_name, desc: (i.description || '').trim(), stars: i.stargazers_count,
         lang: i.language || '', delta: i.stargazers_count, created: i.created_at.slice(0, 10),
+        pushed: i.pushed_at.slice(0, 10),
       });
     }
     await new Promise(s => setTimeout(s, 2500)); // 认证 30 req/min
@@ -159,14 +169,14 @@ async function fetchEarlyOpportunities() {
     const tags = classify(r);
     if (!tags.some(t => moneyTag.includes(t))) return false;  // 必须命中钱方向
     if (r.stars > 3000) return false;                          // 已挤满人
-    if (!r.desc || r.desc.length < 15) return false;           // 描述都没有，无法判断
+    if (!r.desc || r.desc.length < 15) return false;
     if (/\b(mirror|fork|read-only|nightly|weekly? build)\b/i.test(`${r.repo} ${r.desc}`)) return false;
     const ageDays = (Date.now() - new Date(r.created)) / 864e5;
     if (ageDays < 5) return false;                              // 太新可能是纯炒作
-    // 质量闸门：垃圾项目靠模板刷星，特征是描述短、全是口号、无实现细节
-    if (r.desc.length < 40 && !/[A-Za-z]{4,}/.test(r.desc)) return false;
-    if (/\b(community-driven|discord and telegram|discord telegram)\b/i.test(r.desc) && r.stars < 300) return false; // 批量模板 bot
-    r.vel = r.stars / ageDays;                                 // 日均涨星
+    if (/\b(community-driven|discord and telegram|discord telegram)\b/i.test(r.desc) && r.stars < 300) return false;
+    // 复合增速：日均涨星 70% + 近期活跃 30%（还在 push 的项目，窗口才真开着）
+    const activeDays = (Date.now() - new Date(r.pushed)) / 864e5;
+    r.vel = 0.7 * (r.stars / ageDays) + 0.3 * (r.stars / Math.max(activeDays, 1) / 10);
     return true;
   }).sort((a, b) => b.vel - a.vel).slice(0, 15);
 }
@@ -174,7 +184,7 @@ async function fetchEarlyOpportunities() {
 function main() { return mainAsync(); }
 
 // ===== 种子信号：seeds.json 里的作者新 repo、topic 新项目 =====
-async function searchRepo(q, per = 5) {
+async function searchRepo(q, per = 10) {
   const res = await fetch(
     `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=${per}`,
     { headers: authHeaders },
@@ -252,8 +262,15 @@ async function mainAsync() {
   const freshList = seenBefore ? allNow.filter(r => !seenBefore.has(r.repo)) : [];
   writeFileSync(SEEN, JSON.stringify({ date: today, repos: [...new Set(allNow.map(r => r.repo))] }, null, 2));
 
-  // 精华候选：按价值分排序（非星数），只取有强方向标签的。分数逻辑见 score()
-  const essence = dedupeBy(allNow).map(r => ({ r, s: score(r, history) }))
+  // 精华候选：按价值分排序（非星数），只取有强方向标签的。分数逻辑见 score()。
+  // 数据源公平化：所有榜单进精华池前，统一从「带 created 字段的源」（季/年榜、种子、早期机会）回填 created——
+  // 否则同一项目从早期机会榜进来 +20 早期分、从周榜进来没有，排序被数据源而非价值决定。
+  const createdAt = new Map();
+  for (const r of [...dedupeBy(authorSignals), ...dedupeBy(topicSignals), ...early, ...minusWeek(quarter), ...minusWeek(year)]) {
+    if (r.created && !createdAt.has(r.repo)) createdAt.set(r.repo, r.created);
+  }
+  const backfill = r => { if (!r.created && createdAt.has(r.repo)) r.created = createdAt.get(r.repo); return r; };
+  const essence = dedupeBy(allNow).map(backfill).map(r => ({ r, s: score(r, history) }))
     .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 15);
 
   const fmtEarly = r => `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()} _${r.created} 新建，日均 +${r.vel.toFixed(1)}星（${Math.round((Date.now() - new Date(r.created)) / 864e5)} 天）_ ${classify(r).join(' ')} — ${r.desc}`;

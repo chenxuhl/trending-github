@@ -132,6 +132,45 @@ function mapItems(data) {
   }));
 }
 
+// ===== 🫰 早期机会：赚钱门路的窗口期在项目 2~8 周、星数还低、增速已起飞时 =====
+// 逻辑：60 天内新建 + 星 30~3000 + 钱关键词（副业/求职/投资）+ 描述像产品不是库。
+// 排序按日均涨星（stars/age），不是星数——star 增速是「关注的人正在变多」的实时信号。
+async function fetchEarlyOpportunities() {
+  const since = new Date(Date.now() - 60 * 864e5).toISOString().slice(0, 10);
+  const moneyTag = Object.keys(STRONG).filter(t => /💰|💼|📈/.test(t));
+  // Search API 一次 query 拿不稳；用多个具体词分头搜再合并，每个取 30
+  const probes = ['saas', 'side project', 'monetize', 'stripe', 'freelance', 'trading', 'backtest', 'resume', 'job search', 'passive income', 'newsletter', 'directory', 'seo'];
+  const all = new Map();
+  for (const p of probes) {
+    const res = await fetch(
+      `https://api.github.com/search/repositories?q=${encodeURIComponent(p)}+created:%3E${since}+stars:%3E30&sort=updated&order=desc&per_page=30`,
+      { headers: authHeaders },
+    );
+    if (!res.ok) continue;
+    for (const i of (await res.json()).items || []) {
+      all.set(i.full_name, {
+        repo: i.full_name, desc: (i.description || '').trim(), stars: i.stargazers_count,
+        lang: i.language || '', delta: i.stargazers_count, created: i.created_at.slice(0, 10),
+      });
+    }
+    await new Promise(s => setTimeout(s, 2500)); // 认证 30 req/min
+  }
+  return [...all.values()].filter(r => {
+    const tags = classify(r);
+    if (!tags.some(t => moneyTag.includes(t))) return false;  // 必须命中钱方向
+    if (r.stars > 3000) return false;                          // 已挤满人
+    if (!r.desc || r.desc.length < 15) return false;           // 描述都没有，无法判断
+    if (/\b(mirror|fork|read-only|nightly|weekly? build)\b/i.test(`${r.repo} ${r.desc}`)) return false;
+    const ageDays = (Date.now() - new Date(r.created)) / 864e5;
+    if (ageDays < 5) return false;                              // 太新可能是纯炒作
+    // 质量闸门：垃圾项目靠模板刷星，特征是描述短、全是口号、无实现细节
+    if (r.desc.length < 40 && !/[A-Za-z]{4,}/.test(r.desc)) return false;
+    if (/\b(community-driven|discord and telegram|discord telegram)\b/i.test(r.desc) && r.stars < 300) return false; // 批量模板 bot
+    r.vel = r.stars / ageDays;                                 // 日均涨星
+    return true;
+  }).sort((a, b) => b.vel - a.vel).slice(0, 15);
+}
+
 function main() { return mainAsync(); }
 
 // ===== 种子信号：seeds.json 里的作者新 repo、topic 新项目 =====
@@ -204,8 +243,11 @@ async function mainAsync() {
   const weekSet = new Set(weekly.map(r => r.repo));
   const minusWeek = rs => rs.filter(r => !weekSet.has(r.repo));
 
+  // 早期机会：60 天内 + 星 30~3000 + 钱方向命中，按日均涨星排序
+  const early = await fetchEarlyOpportunities();
+
   // 本期新增判定：和上期 seen.json 比，跨榜统一标 🆕，报告只需读新增项
-  const allNow = [...dedupeBy(authorSignals), ...dedupeBy(topicSignals), ...daily, ...weekly,
+  const allNow = [...dedupeBy(authorSignals), ...dedupeBy(topicSignals), ...early, ...daily, ...weekly,
     ...minusWeek(monthly), ...minusWeek(quarter), ...minusWeek(year)];
   const freshList = seenBefore ? allNow.filter(r => !seenBefore.has(r.repo)) : [];
   writeFileSync(SEEN, JSON.stringify({ date: today, repos: [...new Set(allNow.map(r => r.repo))] }, null, 2));
@@ -214,10 +256,16 @@ async function mainAsync() {
   const essence = dedupeBy(allNow).map(r => ({ r, s: score(r, history) }))
     .filter(x => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 15);
 
+  const fmtEarly = r => `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()} _${r.created} 新建，日均 +${r.vel.toFixed(1)}星（${Math.round((Date.now() - new Date(r.created)) / 864e5)} 天）_ ${classify(r).join(' ')} — ${r.desc}`;
+
   const longBurn = weekly.filter(r => history[r.repo].weeks >= 4)
     .sort((a, b) => history[b.repo].weeks - history[a.repo].weeks);
   const report = [
     `# GitHub Trending 全窗口（${today}）`,
+    ``,
+    `## 🫰 早期机会（60 天内新建，星 30~3000，钱方向命中，按日均涨星排序）`,
+    `_排序依据 = stars / 项目年龄：增速正在起飞但星数还低 = 关注的人还少 = 窗口期内_`,
+    ...early.map(fmtEarly),
     ``,
     `## 💎 精华候选（按价值分排序，top ${essence.length}）`,
     `_分数 = 强方向标签 + 赚钱类优先 + 早期窗口(新建且<5k星) - 大热降权 - 长期在榜衰减 - 无描述扣分_`,

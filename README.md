@@ -1,6 +1,6 @@
 # trending-github
 
-GitHub project radar: five-tier trending (daily / weekly / monthly / quarterly / yearly) plus seed signals (new repos from authors and topics you follow), diffed against last run so you only see what's **new**. Built to never miss the next [Orca](https://github.com/stablyai/orca) — the project that was famous for months before you heard of it.
+GitHub project radar for **finding money-making opportunities before they get crowded**. Five-tier trending plus seed signals plus an **early-opportunity tier**: repos created <60d with 30–3000 stars, money-keyword match, quality-gated, ranked by **stars-per-day velocity** — the window is when growth is taking off but attention is still low. Built so you never learn about the next [Orca](https://github.com/stablyai/orca) months late.
 
 ## Latest report
 
@@ -10,13 +10,14 @@ GitHub project radar: five-tier trending (daily / weekly / monthly / quarterly /
 
 ```
 node trending.mjs             # fetch all tiers + seed signals, diff vs last run
-node trending.mjs --selftest  # offline parser/diff self-check
+node trending.mjs --selftest  # offline parser/diff/scoring self-check
 ```
 
 Each run produces `report.md`:
 
 | Section | Source |
 |---|---|
+| 🫰 Early opportunities | created <60d, 30–3000 stars, 💰/💼/📈 keyword, quality-gated, ranked by stars/day |
 | 💎 Top picks | scored and ranked by `score()` — see below |
 | 🆕 New this run | auto-diff vs `seen.json` (last run's repo set) |
 | Seed signals | `seeds.json`: new repos from followed authors (pushed <30d) + topic projects (<90d, interest-tagged) |

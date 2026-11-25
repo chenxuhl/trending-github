@@ -88,13 +88,75 @@ last30days-skill（74k +5.4k）、univer（31k +3.3k）、ffmpeg-skill（10k +3.
 
 dsh-our-free-model（86k +48k）、t3code（77k +47k）、security-audit-skill（78k +35k）、impeccable（116k +30k）、hallmark（60k +29k）、sherlock（117k +22k）、OpenMausBot（27k +22k）、magpie（41k +20k）、DeepTutor（62k +20k）、hyperframes（89k +18k）、claude-mem（119k +17k）、anthropics/skills（200k +16k）、Claude-BugHunter（21k +15k）、claude-seo（32k +12k 💰）、agent-browser（53k +9.4k）、instagram-agent-skill（9k +6.2k）。
 
-### 季榜（90 天新建 top30）
+### 季榜（90 天新建 top30，全量保留）
 
-dsh-our-free-model（86k）、photocraft（81k）、HowToLiveBetter（77k 💼📈）、cleanyourtv（60k）、Strata（47k）、craft-anything（42k）、magpie（41k）、laya（35k）、dsh-Go（31k）、Filee（30k）、anatomy（29k）、DeepInfer（26k）、harness2（25k）、jev-ultrafast（24k）、dsh-superagent-prototype（24k）、elephant-goldfish-model（22k）、DroidDeck（21k）、pdfcraft（21k）、unslop（21k）、gpu-unlock（20k）、lemo-opuscar（20k）、ARTEX（19k）、filmcraft（18k）、Compositor（18k）、wordcraft（18k）、solidcraft（18k）、misterdownloadmanager（17k）、openai/math（17k）、nxnative（16k）、awesome-opus5-5-videos（16k）。
+| 项目 | 星数 | 建于 | 标签 | 一句话 |
+|---|---|---|---|---|
+| [dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) | 86k | 09-24 | — | dsh 免费用 DeepSeek/Kimi 前沿模型，无限量 |
+| [photocraft](https://github.com/storytold/photocraft) | 81k | 09-30 | — | 纯 Rust 照片编辑器 |
+| [HowToLiveBetter](https://github.com/eternity4719/HowToLiveBetter) | 77k | 09-07 | 💼📈 | 中文人生指南：理财、社保、创业，证据分级 |
+| [cleanyourtv](https://github.com/Gathin23/cleanyourtv) | 60k | 10-17 | — | Android TV 去广告，Apple TV 风格桌面 |
+| [Strata](https://github.com/Niko1221/Strata) | 47k | 09-24 | — | 消费级硬件本地跑 Qwen3.8，OpenAI 兼容 API |
+| [craft-anything](https://github.com/storytold/craft-anything) | 42k | 10-31 | — | 理解任意软件原理并自己造 |
+| [magpie](https://github.com/yetone/magpie) | 41k | 09-23 | ⚡ | 菜单栏统一给 agent 换模型 |
+| [laya](https://github.com/NandhaKishorM/laya) | 35k | 09-18 | — | 非自回归 System 1 决策引擎，100+ 语言 |
+| [dsh-Go](https://github.com/ccch1mneyyy/dsh-Go) | 31k | 10-25 | — | 手机本机跑 DeepSeek Harness，遥控电脑 |
+| [Filee](https://github.com/KnifeLemon/Filee) | 30k | 09-29 | — | 离线转换 263 种文件格式 |
+| [anatomy](https://github.com/wheresryan22/anatomy) | 29k | 10-08 | — | 复杂系统的交互式等距图解 SVG |
+| [DeepInfer](https://github.com/deepseek-ai/DeepInfer) | 26k | 10-16 | — | DeepSeek 官方高性能推理框架 |
+| [harness2](https://github.com/google-research/harness2) | 25k | 10-06 | — | Google（无描述） |
+| [jev-ultrafast](https://github.com/browser-use/jev-ultrafast) | 24k | 09-16 | ⚡ | 最快最便宜的 web agent |
+| [dsh-superagent-prototype](https://github.com/deepseek-ai/dsh-superagent-prototype) | 24k | 10-31 | ⚡ | DeepSeek 自主 agent 系统原型 |
+| [elephant-goldfish-model](https://github.com/google/elephant-goldfish-model) | 22k | 09-13 | ⚡ | Google agent 设计/评审插件 |
+| [DroidDeck](https://github.com/Droid-Deck/DroidDeck) | 21k | 09-24 | — | SteamOS 体验带到 Android |
+| [pdfcraft](https://github.com/storytold/pdfcraft) | 21k | 09-30 | — | 纯 Rust PDF 阅读器+编辑器 |
+| [unslop](https://github.com/heydamir/unslop) | 21k | 10-29 | ⚡ | 把 AI 味 UI 改成设计过的界面 |
+| [gpu-unlock](https://github.com/Zagitta/gpu-unlock) | 20k | 10-18 | — | GeForce 20/30/40 系 AI 提速最高 2 倍 |
+| [lemo-opuscar](https://github.com/lemomo-ai/lemo-opuscar) | 20k | 09-26 | — | Claude Code 代码做片风格工具箱（中英） |
+| [ARTEX](https://github.com/BaaRai/ARTEX) | 19k | 10-08 | — | AI 自主渗透测试系统 |
+| [filmcraft](https://github.com/storytold/filmcraft) | 18k | 09-30 | — | 纯 Rust 非线性视频编辑器 |
+| [Compositor](https://github.com/robbietilton/Compositor) | 18k | 09-16 | 💰 | Mac 的 Photoshop 替代品 |
+| [wordcraft](https://github.com/storytold/wordcraft) | 18k | 10-07 | — | 纯 Rust 字处理器 |
+| [solidcraft](https://github.com/tangency-labs/solidcraft) | 18k | 10-07 | ⚡ | 纯 Rust 参数化 3D CAD，MCP 自动化 |
+| [misterdownloadmanager](https://github.com/anefzaoui/misterdownloadmanager) | 17k | 10-29 | — | 纯 Rust 下载管理器 |
+| [math](https://github.com/openai/math) | 17k | 10-06 | — | OpenAI Lean（无描述） |
+| [nxnative](https://github.com/seedds/nxnative) | 16k | 10-13 | — | Switch 游戏原生跑 iPhone/iPad/Mac |
+| [awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos) | 16k | 09-27 | — | Opus 5.5 爆款视频 + prompt 收录 |
 
-### 年榜（365 天新建 top30）
+### 年榜（365 天新建 top30，全量保留）
 
-rea（477k）、mattpocock/skills（332k）、ECC（310k ⚡）、deepseek-harness（286k）、andrej-karpathy-skills（235k）、ponytail（198k）、claw-code（194k）、ui-ux-pro-max-skill（153k）、graphify（153k）、gstack（142k）、orca（136k 💰）、awesome-design-md（128k）、caveman（122k）、taste-skill（121k）、agent-skills（120k）、VoiceStudio（117k）、paperclip（116k）、Agent-Reach（114k）、open-design（109k）、autoresearch（100k）、archify（99k）、odysseus（95k）、Understand-Anything（94k）、worldmonitor（91k）、OmniRoute（90k）、hyperframes（89k）、rtk（87k）、MiroFish（86k 中文）、dsh-our-free-model（86k）、career-ops（84k 💼）。
+| 项目 | 星数 | 建于 | 标签 | 一句话 |
+|---|---|---|---|---|
+| [rea](https://github.com/morluto/rea) | 477k | 04-14 | ⚡ | agent 逆向任意软件到二进制级 |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | 332k | 02-03 | — | 工程师技能集（.agents 目录开源） |
+| [ECC](https://github.com/affaan-m/ECC) | 310k | 01-18 | ⚡ | agent harness 性能优化系统 |
+| [deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) | 286k | 08-13 | — | DeepSeek Harness：一切皆插件 |
+| [andrej-karpathy-skills](https://github.com/multica-ai/andrej-karpathy-skills) | 235k | 01-27 | — | Karpathy 编码观察做成 CLAUDE.md |
+| [ponytail](https://github.com/DietrichGebert/ponytail) | 198k | 06-12 | — | 最懒资深开发思维（你在用） |
+| [claw-code](https://github.com/ultraworkers/claw-code) | 194k | 03-31 | — | agent 管理的博物馆展品（Rust） |
+| [ui-ux-pro-max-skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | 153k | 11-30 | ⚡ | UI/UX 设计智能技能 |
+| [graphify](https://github.com/Graphify-Labs/graphify) | 153k | 04-03 | — | 代码库+文档变可查询知识图谱 |
+| [gstack](https://github.com/garrytan/gstack) | 142k | 03-11 | — | Garry Tan 的 Claude Code 配置：23 工具 |
+| [orca](https://github.com/stablyai/orca) | 136k | 03-17 | 💰 | 你在用的 bot 舰队工具 |
+| [awesome-design-md](https://github.com/VoltAgent/awesome-design-md) | 128k | 03-31 | ⚡ | 品牌设计系统 DESIGN.md 合集 |
+| [caveman](https://github.com/JuliusBrussee/caveman) | 122k | 04-04 | — | 省词技能 + 本地代理（你在用） |
+| [taste-skill](https://github.com/Leonxlnx/taste-skill) | 121k | 02-19 | — | 给 agent 品味：艺术指导、参考图 |
+| [agent-skills](https://github.com/addyosmani/agent-skills) | 120k | 02-15 | — | 生产级工程技能 |
+| [VoiceStudio](https://github.com/debpalash/VoiceStudio) | 117k | 04-09 | — | 完全本地的 ElevenLabs 替代 |
+| [paperclip](https://github.com/paperclipai/paperclip) | 116k | 03-02 | — | 管理工作中的 agent 的 app |
+| [Agent-Reach](https://github.com/Panniantong/Agent-Reach) | 114k | 02-24 | — | agent 的全互联网眼睛（含 B 站/小红书） |
+| [open-design](https://github.com/nexu-io/open-design) | 109k | 04-28 | — | 协作 AI 设计工作台，本地优先 |
+| [autoresearch](https://github.com/karpathy/autoresearch) | 100k | 03-06 | — | Karpathy：单 GPU 自动跑研究 |
+| [archify](https://github.com/tt-a1i/archify) | 99k | 04-15 | — | 想法/代码变交互式图表 |
+| [odysseus](https://github.com/odysseus-dev/odysseus) | 95k | 05-31 | — | 自托管 AI 工作区 |
+| [Understand-Anything](https://github.com/Egonex-AI/Understand-Anything) | 94k | 03-15 | — | 代码变可探索知识图谱 |
+| [worldmonitor](https://github.com/koala73/worldmonitor) | 91k | 01-08 | — | 实时全球情报仪表盘 |
+| [OmniRoute](https://github.com/cheaper-inference/OmniRoute) | 90k | 02-13 | ⚡ | 375 供应商统一 AI 网关（150+ 免费） |
+| [hyperframes](https://github.com/heygen-com/hyperframes) | 89k | 03-10 | ⚡ | HeyGen 开源视频编辑：HTML 出 MP4 |
+| [rtk](https://github.com/rtk-ai/rtk) | 87k | 01-22 | ⚡ | CLI 代理，token 省 60-90% |
+| [MiroFish](https://github.com/666ghj/MiroFish) | 86k | 11-26 | — | 群体智能预测引擎（中文） |
+| [dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) | 86k | 09-24 | — | dsh 免费用前沿模型 |
+| [career-ops](https://github.com/career-ops-hq/career-ops) | 84k | 04-04 | 💼 | AI 找工作 agent：打分、简历、追踪 |
 
 ---
 

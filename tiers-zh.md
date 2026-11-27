@@ -49,9 +49,26 @@ superpowers（327k）、firecrawl（211k）、AFFiNE（79k）、diagram-design�
 
 last30days-skill（75k +5.1k）、ffmpeg-skill（11k +3.2k）、stitch-skills（13k +2.6k）、astryx（33k +2.5k 🎨）、open-code-review（56k +2.3k ⚡）、modern-web-guidance（11k +2.2k）、univer（32k +1.8k）、plannotator（15k +1.6k）、sure（18k +1.4k 📈）、claude-trading-skills（8.6k +1.4k 📈）、ag-ui（21k +1.3k）、chrome-devtools-mcp（59k +1.2k）、nod（4k +1.2k）、obsidian-skills（54k +704）、HermesEnabler（2.5k +0.3k）。
 
-### 月榜（16，去重周榜）
+### 月榜（16，去重周榜，表格全量保留）
 
-t3code（81k +50k）、dsh-our-free-model（88k +47k）、security-audit-skill（79k +31k）、impeccable（117k +29k 🎨）、hallmark（61k +27k 🎨）、sherlock（118k +23k）、OpenMausBot（28k +23k）、DeepTutor（63k +20k）、magpie（42k +20k）、Claude-BugHunter（24k +18k）、hyperframes（91k +18k）、anthropics/skills（201k +17k）、claude-mem（120k +17k）、claude-seo（32k +11k 💰）、agent-browser（54k +9.6k）、instagram-agent-skill（9.6k +6.5k）。
+| 项目 | 星数 | 本月 | 标签 | 一句话 |
+|---|---|---|---|---|
+| [t3code](https://github.com/pingdotgg/t3code) | 81k | +50k | — | 手机/电脑远程控制 Claude Code、Codex |
+| [dsh-our-free-model](https://github.com/Ebony-Vinyl/dsh-our-free-model) | 88k | +47k | — | dsh 免费用 DeepSeek/Kimi 前沿模型 |
+| [security-audit-skill](https://github.com/cloudflare/security-audit-skill) | 79k | +31k | — | Cloudflare 多阶段安全审计技能 |
+| [impeccable](https://github.com/pbakaus/impeccable) | 117k | +29k | 🎨 | agent 设计词汇表：打磨、评审、抓 slop |
+| [hallmark](https://github.com/Nutlope/hallmark) | 61k | +27k | 🎨 | 反 AI-slop 设计技能 |
+| [sherlock](https://github.com/sherlock-project/sherlock) | 118k | +23k | — | OSINT 按用户名跨平台追踪 |
+| [OpenMausBot](https://github.com/milind-soni/OpenMausBot) | 28k | +23k | — | 开源 Grok Bot 替代 |
+| [DeepTutor](https://github.com/HKUDS/DeepTutor) | 63k | +20k | — | 终身个性化辅导 |
+| [magpie](https://github.com/yetone/magpie) | 42k | +20k | — | 订阅模型池化共用 |
+| [Claude-BugHunter](https://github.com/elementalsouls/Claude-BugHunter) | 24k | +18k | — | 84 技能漏洞挖掘/红队包 |
+| [hyperframes](https://github.com/heygen-com/hyperframes) | 91k | +18k | — | HeyGen 开源视频编辑：HTML 出 MP4 |
+| [anthropics/skills](https://github.com/anthropics/skills) | 201k | +17k | — | Anthropic 官方 Skills 仓库 |
+| [claude-mem](https://github.com/thedotmack/claude-mem) | 120k | +17k | — | agent 会话持久记忆 |
+| [claude-seo](https://github.com/AgriciDaniel/claude-seo) | 32k | +11k | 💰 | 26 子技能全链路 SEO |
+| [agent-browser](https://github.com/vercel-labs/agent-browser) | 54k | +9.6k | — | Vercel 浏览器自动化 CLI |
+| [instagram-agent-skill](https://github.com/Jakeschincariol/instagram-agent-skill) | 9.6k | +6.5k | — | 13 个技能运营 Instagram 号 |
 
 ### 季榜（90 天新建 top30，全量保留）
 

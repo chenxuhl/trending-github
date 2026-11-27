@@ -22,7 +22,8 @@ node trending.mjs --selftest      # 解析器自检（HTML 改版后先跑这个
 - `seen.json` — 上期所有榜单 repo 集合 + 日期，用于自动算「本期新增」。删掉则下期无对比基线
 - `history.json` — 各 repo 首见/末见/在榜期数，删掉即重置
 - `report.md` — 脚本底稿（第一节是「🆕 本期新增」）
-- `report-zh.md` — 中文报告（会话产出）
+- `report-zh.md` — 中文主报告（≤90 行，每期读的）
+- `tiers-zh.md` — 季/年榜全量存档（低频更新，明细检索用）
 
 ## 排查
 

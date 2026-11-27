@@ -1,7 +1,23 @@
 # GitHub 项目雷达（2026-11-27，中文版）
 
-英文版：`report.md`（脚本直出）。标签：⚡ 提效 / 💰 副业 / 💼 求职 / 📈 投资。
+英文版：`report.md`（脚本直出）。标签：⚡ 提效 / 💰 副业 / 💼 求职 / 📈 投资。方向：**赚钱 + 提效并重**。
 **本期新增 15 个**（vs 11-25），隔两天跑一次，窗口抓得住了。
+
+## 🛠️ 工具横评：反 AI 味 / 设计质量（本期聚合）
+
+散在各榜的同类工具，一次对比：
+
+| 工具 | 星数 | 干什么 | 怎么选 |
+|---|---|---|---|
+| [impeccable](https://github.com/pbakaus/impeccable)（月 +29k） | 117k | 设计词汇表：打磨、评审、审计、抓 slop | **老大，首选**——写新代码时防 slop |
+| [hallmark](https://github.com/Nutlope/hallmark)（月 +27k） | 61k | 反 AI-slop 设计技能 | 轻量版 impeccable，两者取一 |
+| [unslop](https://github.com/heydamir/unslop) | 22k | 把已生成的 AI 味 UI **改造成**设计过的界面 | 唯一做「修复陈品」的，配合上面用 |
+| [taste-skill](https://github.com/Leonxlnx/taste-skill) | 122k | 艺术指导、参考图、浏览器实测 | 预防型，强调「品味」而非规则 |
+| [awesome-design-md](https://github.com/VoltAgent/awesome-design-md) | 129k | 各大品牌设计系统 DESIGN.md 合集 | 要某品牌风格时丢进项目 |
+| [astryx](https://github.com/meta/astryx)（周榜） | 33k | Meta 官方设计系统，agent 就绪 | 官方背书，企业风 |
+| [diagram-design](https://github.com/cathrynlavery/diagram-design)（日榜） | 74k | 52 种编辑级图表 | 专门做图表场景 |
+
+**结论**：你已有 ui-ux-pro-max（154k，本机在装）。装 impeccable 看是否更强；有陈旧 AI 味项目要救时加 unslop。
 
 ## 🫰 早期机会（60 天内新建，星 30~3000，钱方向命中，按日均涨星排序）
 

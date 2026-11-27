@@ -53,13 +53,13 @@ function parseTrending(html) {
 // 强词 = 直接对应用户的具体场景（能赚钱/能省时间的具体动作），弱词 = 领域背景噪音。
 // 所有词用 \b 词边界：否则 formats→ats(求职)、optional→option(投资)、directory(副业) 等子串假阳性。
 const STRONG = {
-  '💰 副业': /\b(saas|side.?hustle|side.?project|indie.?(hacker|maker)s?|monetiz\w*|revenue|stripe|paywall|subscription.?(revenue|billing)|ecommerce|shopify|dropship\w*|affiliate|seo|backlinks?|product.?hunt|micro.?saas|app.?ideas?|startup.?ideas?|freelanc\w*)\b|接单|变现|副业/i,
-  '💼 求职': /\b(resume|cv.?builder|cover.?letter|job.?(search|board|appl\w*|hunt\w*)|interview.?(prep|question)s?|ats.?(friendly|optimiz\w*|resume)|career.?(ops|coach|path)|leetcode|hiring|layoffs?|unemploy\w*)\b|面试|简历|求职|裁员|失业/i,
-  '📈 投资': /\b(trading|trade.?(bot|agent|engine|journal)|backtest\w*|quant\w*|portfolio.?(track\w*|manag\w*)|stocks?|equit\w*|options?.?(trading|terminal|chain|greeks)|futures|forex|crypto|defi|net.?worth|personal.?finance|budget\w*|brokerage|market.?(data|maker|making)|candlestick|indicators?)\b|交易|投资|理财|量化|炒股/i,
+  '副业': /\b(saas|side.?hustle|side.?project|indie.?(hacker|maker)s?|monetiz\w*|revenue|stripe|paywall|subscription.?(revenue|billing)|ecommerce|shopify|dropship\w*|affiliate|seo|backlinks?|product.?hunt|micro.?saas|app.?ideas?|startup.?ideas?|freelanc\w*)\b|接单|变现|副业/i,
+  '求职': /\b(resume|cv.?builder|cover.?letter|job.?(search|board|appl\w*|hunt\w*)|interview.?(prep|question)s?|ats.?(friendly|optimiz\w*|resume)|career.?(ops|coach|path)|leetcode|hiring|layoffs?|unemploy\w*)\b|面试|简历|求职|裁员|失业/i,
+  '投资': /\b(trading|trade.?(bot|agent|engine|journal)|backtest\w*|quant\w*|portfolio.?(track\w*|manag\w*)|stocks?|equit\w*|options?.?(trading|terminal|chain|greeks)|futures|forex|crypto|defi|net.?worth|personal.?finance|budget\w*|brokerage|market.?(data|maker|making)|candlestick|indicators?)\b|交易|投资|理财|量化|炒股/i,
   // 提效拆两域：工程域 + 设计域（2026-11-27 hallmark 审查发现：设计类工具全部漏标，
   // design system/UI/slop 等词一个没进正则，impeccable/hallmark/unslop 全 NO TAG）
-  '🎨 设计提效': /\b(design.?(system|vocabulary|skill|tool|intelligence)|anti.?slop|slop|ui.?ux|ui.?design|ux.?design|design.?review|visual.?design|typography|layout|design.?tokens|illustration|diagram.?design|brand.?design|logo.?design|art.?direction|ai.?looking.?ui|designed.?(interface|ui)|ui.?into)\b|设计/i,
-  '⚡ 工程提效': /\b(code.?review|refactor\w*|debugg\w*|test.?(gen\w*|coverage)|ci.?cd|devops|linter|token.?(cost|saving|reduc\w*)|context.?(manag\w*|window)|prompt.?(optimi\w*|engineer\w*)|observability|profil(er|ing)|doc(umentation)?.?gen\w*|boilerplate|scaffold\w*|codegen)\b|自动化|提效/i,
+  '设计': /\b(design.?(system|vocabulary|skill|tool|intelligence)|anti.?slop|slop|ui.?ux|ui.?design|ux.?design|design.?review|visual.?design|typography|layout|design.?tokens|illustration|diagram.?design|brand.?design|logo.?design|art.?direction|ai.?looking.?ui|designed.?(interface|ui)|ui.?into)\b|设计/i,
+  '工程': /\b(code.?review|refactor\w*|debugg\w*|test.?(gen\w*|coverage)|ci.?cd|devops|linter|token.?(cost|saving|reduc\w*)|context.?(manag\w*|window)|prompt.?(optimi\w*|engineer\w*)|observability|profil(er|ing)|doc(umentation)?.?gen\w*|boilerplate|scaffold\w*|codegen)\b|自动化|提效/i,
 };
 // 弱词：命中只在已有强标签时加一分权重，自己不单独产生标签
 const WEAK = /\b(agents?|skills?|mcp|cli|automat\w*|llm|ai)\b/i;
@@ -77,7 +77,7 @@ function score(r, history) {
   // 排除类：镜像/构建产物/目录索引本身无使用价值
   if (/\b(mirror|read-only|nightly|hourly build|daily build|adhoc build|not a source repo)\b/i.test(text)) return 0;
   let s = 10 * tags.length;
-  if (tags.some(t => /💰|💼|📈|🎨/.test(t))) s += 15;   // 赚钱+设计类优先：🎨 也算正交价值（副业产品转化靠设计）
+  if (tags.some(t => /副业|求职|投资|设计/.test(t))) s += 15;   // 赚钱+设计类优先：设计也算正交价值（副业产品转化靠设计）
   // 强词密度：命中越多说明越是这个领域的正主，不是蹭词
   const density = Object.values(STRONG).reduce((n, re) => n + (text.match(new RegExp(re.source, 'gi')) || []).length, 0);
   s += Math.min(density * 2, 16);
@@ -152,7 +152,7 @@ const EARLY_PROBES = [
 ];
 async function fetchEarlyOpportunities() {
   const since = new Date(Date.now() - 60 * 864e5).toISOString().slice(0, 10);
-  const moneyTag = Object.keys(STRONG).filter(t => /💰|💼|📈/.test(t));
+  const moneyTag = Object.keys(STRONG).filter(t => /副业|求职|投资/.test(t));
   const all = new Map();
   for (const p of EARLY_PROBES) {
     const res = await fetch(
@@ -249,7 +249,7 @@ async function mainAsync() {
   const fmt = r => {
     const tags = classify(r);
     const extra = r.created ? ` _${r.created} 新建_` : '';
-    const isNew = seenBefore && !seenBefore.has(r.repo) ? ' **🆕本期新增**' : '';
+    const isNew = seenBefore && !seenBefore.has(r.repo) ? ' **本期新增**' : '';
     return `- [${r.repo}](https://github.com/${r.repo}) ⭐${r.stars.toLocaleString()}${r.delta !== r.stars ? ` (+${r.delta.toLocaleString()})` : ''}${r.lang ? ` \`${r.lang}\`` : ''}${tags.length ? ` ${tags.join(' ')}` : ''}${extra}${isNew} — ${r.desc || '(no description)'}`;
   };
   const fmtScored = r => `${fmt(r)} _[${score(r, history)}分]_`;
@@ -291,21 +291,21 @@ async function mainAsync() {
   const report = [
     `# GitHub Trending 全窗口（${today}）`,
     ``,
-    `## 🫰 早期机会（60 天内新建，星 30~3000，钱方向命中，按日均涨星排序）`,
-    `_排序依据 = stars / 项目年龄：增速正在起飞但星数还低 = 关注的人还少 = 窗口期内_`,
+    `## 早期机会（60 天内新建，星 30~3000，钱方向命中，按日均涨星排序）`,
+    `_排序依据：stars 除以项目年龄。增速起飞但星数还低，说明关注的人还少，窗口期内。_`,
     ...early.map(fmtEarly),
     ``,
-    `## 💎 精华候选（按价值分排序，top ${essence.length}）`,
+    `## 精华候选（按价值分排序，top ${essence.length}）`,
     `_分数 = 强方向标签 + 赚钱/设计类优先 + 强词密度 + 早期窗口(新建且<5k星) - 大热降权 - 长期在榜衰减 - 无描述扣分_`,
     ...essence.map(x => fmtScored(x.r)),
     ``,
-    `## ⚠️ 增速异常对照（高增速但不在精华——每期自检筛选是否漏域）`,
+    `## 增速异常对照（高增速但不在精华——每期自检筛选是否漏域）`,
     ...(anomalies.length ? anomalies.map(r => `${fmt(r)} _增量 +${r.delta.toLocaleString()}，分数 ${score(r, history)}_`)
       : ['_无异常：增速 Top 全在精华或已合理降级_']),
     ``,
     seenBefore
-      ? `## 🆕 本期新增（相对上期 ${seenDate}，${dedupeBy(freshList).length} 个）\n${dedupeBy(freshList).length ? dedupeBy(freshList).sort((a, b) => b.stars - a.stars).map(fmt).join('\n') : '_无新增_'}`
-      : `## 🆕 本期新增\n_首次运行，无对比基线_`,
+      ? `## 本期新增（相对上期 ${seenDate}，${dedupeBy(freshList).length} 个）\n${dedupeBy(freshList).length ? dedupeBy(freshList).sort((a, b) => b.stars - a.stars).map(fmt).join('\n') : '_无新增_'}`
+      : `## 本期新增\n_首次运行，无对比基线_`,
     ``,
     `## 种子信号（你在用/关注的人和主题）`,
     `### 种子作者近 30 天活跃（${dedupeBy(authorSignals).length}）`,
@@ -320,7 +320,7 @@ async function mainAsync() {
     `## 周榜（trending weekly，${weekly.length}）`,
     ...weekly.sort((a, b) => b.delta - a.delta).map(fmt),
     ``,
-    `## 🔥 持续在榜 ≥4 期（${longBurn.length}）`,
+    `## 持续在榜 ≥4 期（${longBurn.length}）`,
     ...longBurn.map(r => `${fmt(r)} _在榜 ${history[r.repo].weeks} 期_`),
     ``,
     `## 月榜（trending monthly，去重周榜后 ${minusWeek(monthly).length}）`,
@@ -352,15 +352,15 @@ if (args.selftest) {
   console.assert(r[0].stars === 12345, `stars got ${r[0].stars}`);
   console.assert(r[0].lang === 'Rust', 'lang');
   console.assert(r[0].delta === 2300, 'delta');
-  console.assert(classify(r[0]).includes('📈 投资'), 'classify trading');
+  console.assert(classify(r[0]).includes('投资'), 'classify trading');
   // 弱词不再单独产标签：纯 agent/skill 项目不该有 ⚡
   console.assert(classify({ repo: 'x/y', desc: 'An agent skill framework with MCP' }).length === 0, 'weak words make no tag');
-  console.assert(classify({ repo: 'x/y', desc: 'Automated code review and refactor tool' }).includes('⚡ 工程提效'), 'strong engineering word');
+  console.assert(classify({ repo: 'x/y', desc: 'Automated code review and refactor tool' }).includes('工程'), 'strong engineering word');
   // 设计域（hallmark 审查补）：这批之前全 NO TAG
-  console.assert(classify({ repo: 'Nutlope/hallmark', desc: 'Anti-AI-slop design skill for Claude Code, Cursor, and Codex.' }).includes('🎨 设计提效'), 'hallmark: anti-slop design');
-  console.assert(classify({ repo: 'pbakaus/impeccable', desc: 'The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit.' }).includes('🎨 设计提效'), 'impeccable: design vocabulary');
-  console.assert(classify({ repo: 'x/astryx', desc: 'An open source design system that is fully customizable and agent ready' }).includes('🎨 设计提效'), 'astryx: design system');
-  console.assert(classify({ repo: 'x/unslop', desc: 'A Claude skill that turns vibecoded, AI-looking UI into a designed interface' }).includes('🎨 设计提效'), 'unslop: UI slop fix');
+  console.assert(classify({ repo: 'Nutlope/hallmark', desc: 'Anti-AI-slop design skill for Claude Code, Cursor, and Codex.' }).includes('设计'), 'hallmark: anti-slop design');
+  console.assert(classify({ repo: 'pbakaus/impeccable', desc: 'The design vocabulary for your coding agent. Steer with polish and bolder, review with critique and audit.' }).includes('设计'), 'impeccable: design vocabulary');
+  console.assert(classify({ repo: 'x/astryx', desc: 'An open source design system that is fully customizable and agent ready' }).includes('设计'), 'astryx: design system');
+  console.assert(classify({ repo: 'x/unslop', desc: 'A Claude skill that turns vibecoded, AI-looking UI into a designed interface' }).includes('设计'), 'unslop: UI slop fix');
   // 设计词不得误伤普通项目
   console.assert(classify({ repo: 'x/nginx', desc: 'The official NGINX Open Source repository' }).length === 0, 'nginx stays untagged');
   // 价值分：新+小+赚钱类 > 老+大热
